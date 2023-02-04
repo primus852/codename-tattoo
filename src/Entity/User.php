@@ -5,7 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use App\Dto\User\UserCreateDto;
 use App\Repository\UserRepository;
+use App\State\User\UserProcessor;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,8 +20,14 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
-        new Post(),
-        new Get(),
+        new Post(
+            uriTemplate: '/user/create',
+            input: UserCreateDto::class,
+            processor: UserProcessor::class
+        ),
+        new Get(
+            uriTemplate: '/user/{id}',
+        ),
     ],
     formats: ["json"],
     routePrefix: '/admin',
@@ -42,6 +52,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'serviceUser', targetEntity: TimeTracking::class)]
+    private Collection $timeTrackings;
+
+    #[ORM\Column(length: 15, unique: true, nullable: false)]
+    private ?string $code = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    private ?string $name = null;
+
+    public function __construct()
+    {
+        $this->timeTrackings = new ArrayCollection();
+    }
 
     public function getId(): ?Uuid
     {
@@ -82,6 +106,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles());
+    }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -111,5 +140,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, TimeTracking>
+     */
+    public function getTimeTrackings(): Collection
+    {
+        return $this->timeTrackings;
+    }
+
+    public function addTimeTracking(TimeTracking $timeTracking): self
+    {
+        if (!$this->timeTrackings->contains($timeTracking)) {
+            $this->timeTrackings->add($timeTracking);
+            $timeTracking->setServiceUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimeTracking(TimeTracking $timeTracking): self
+    {
+        if ($this->timeTrackings->removeElement($timeTracking)) {
+            // set the owning side to null (unless already changed)
+            if ($timeTracking->getServiceUser() === $this) {
+                $timeTracking->setServiceUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

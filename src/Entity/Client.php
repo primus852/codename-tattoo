@@ -6,10 +6,12 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\Dto\ClientCreateDto;
-use App\Repository\ClientRepository;
+use App\Dto\Client\ClientCreateDto;
 use App\Mapping\EntityBase;
-use App\State\ClientProcessor;
+use App\Repository\ClientRepository;
+use App\State\Client\ClientProcessor;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
@@ -18,6 +20,7 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new GetCollection(),
+        new Get(),
         new Post(
             input: ClientCreateDto::class,
             processor: ClientProcessor::class
@@ -40,6 +43,14 @@ class Client extends EntityBase
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $nameShort = null;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: TimeTracking::class, orphanRemoval: true)]
+    private Collection $timeTrackings;
+
+    public function __construct()
+    {
+        $this->timeTrackings = new ArrayCollection();
+    }
 
     public function getId(): ?Uuid
     {
@@ -66,6 +77,36 @@ class Client extends EntityBase
     public function setNameShort(string $nameShort): self
     {
         $this->nameShort = $nameShort;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TimeTracking>
+     */
+    public function getTimeTrackings(): Collection
+    {
+        return $this->timeTrackings;
+    }
+
+    public function addTimeTracking(TimeTracking $timeTracking): self
+    {
+        if (!$this->timeTrackings->contains($timeTracking)) {
+            $this->timeTrackings->add($timeTracking);
+            $timeTracking->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimeTracking(TimeTracking $timeTracking): self
+    {
+        if ($this->timeTrackings->removeElement($timeTracking)) {
+            // set the owning side to null (unless already changed)
+            if ($timeTracking->getClient() === $this) {
+                $timeTracking->setClient(null);
+            }
+        }
 
         return $this;
     }

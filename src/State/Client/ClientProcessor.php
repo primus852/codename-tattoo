@@ -1,6 +1,6 @@
 <?php
 
-namespace App\State;
+namespace App\State\Client;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
@@ -18,6 +18,9 @@ class ClientProcessor implements ProcessorInterface
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @throws ClientAlreadyExistsException
+     */
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
         if ($operation instanceof Post) {

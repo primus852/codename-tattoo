@@ -43,6 +43,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
+    public function loadUserByIdentifierOrCode(string $usernameOrEmail, string $code): ?User
+    {
+        $entityManager = $this->getEntityManager();
+
+        return $entityManager->createQuery(
+            'SELECT u
+                FROM App\Entity\User u
+                WHERE u.email = :email
+                OR u.code = :code
+                '
+        )
+            ->setParameter('email', $usernameOrEmail)
+            ->setParameter('code', $code)
+            ->getOneOrNullResult();
+    }
+
     public function save(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

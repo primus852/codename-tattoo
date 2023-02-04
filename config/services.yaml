@@ -15,7 +15,8 @@ services:
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: [ '@.inner' ]
-        
-    App\State\ClientProcessor:
-        arguments:
-            - '@doctrine.orm.entity_manager'
+    
+    App\State\TimeTracking\TimeTrackingProvider:
+        bind:
+            $itemProvider: '@api_platform.doctrine.orm.state.item_provider'
+            $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
