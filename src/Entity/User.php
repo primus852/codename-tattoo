@@ -23,6 +23,9 @@ use Symfony\Component\Uid\Uuid;
     operations: [
         new Post(
             uriTemplate: '/user',
+            openapiContext: [
+                'tags' => ['Users [Admin]']
+            ],
             normalizationContext: [
                 'groups' => 'read'
             ],
@@ -34,6 +37,9 @@ use Symfony\Component\Uid\Uuid;
         ),
         new Get(
             uriTemplate: '/user/{id}',
+            openapiContext: [
+                'tags' => ['Users [Admin]']
+            ],
         ),
     ],
     formats: ["json"],

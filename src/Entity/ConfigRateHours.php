@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Dto\Config\ConfigRateHoursCreateDto;
 use App\Dto\Config\ConfigRateHoursDto;
+use App\Dto\Config\ConfigRateHoursRequestSlotsDto;
+use App\Dto\Config\ConfigRateHoursSlotsDto;
 use App\Mapping\EntityBase;
 use App\Repository\ConfigRateHoursRepository;
 use App\State\Config\ConfigRateHoursProcessor;
@@ -22,13 +24,38 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new GetCollection(
-            uriTemplate: '/rate-hours',
+            uriTemplate: '/config/rate-hours',
+            openapiContext: [
+                'tags' => ['Rate Hours [Persistence]']
+            ],
         ),
         new Get(
-            uriTemplate: '/rate-hour/{id}',
+            uriTemplate: '/config/rate-hour/{id}',
+            openapiContext: [
+                'tags' => ['Rate Hours [Persistence]']
+            ],
         ),
         new Post(
-            uriTemplate: '/rate-hour',
+            uriTemplate: '/process/rate-hour/combined',
+            openapiContext: [
+                'summary' => 'Get all Rate Hours for a given Date Range',
+                'description' => 'Retrieves a list of all Rate Hours and their amounts for a given Date Range',
+                'tags' => ['Rate Hours [Process]']
+            ],
+            normalizationContext: [
+                'groups' => 'read'
+            ],
+            denormalizationContext: [
+                'groups' => 'write'
+            ],
+            input: ConfigRateHoursRequestSlotsDto::class,
+            output: ConfigRateHoursSlotsDto::class
+        ),
+        new Post(
+            uriTemplate: '/config/rate-hour',
+            openapiContext: [
+                'tags' => ['Rate Hours [Persistence]']
+            ],
             normalizationContext: [
                 'groups' => 'read'
             ],
@@ -40,7 +67,6 @@ use Symfony\Component\Uid\Uuid;
         )
     ],
     formats: ["json"],
-    routePrefix: '/config',
     provider: ConfigRateHoursProvider::class,
     processor: ConfigRateHoursProcessor::class
 )]
@@ -65,6 +91,10 @@ class ConfigRateHours extends EntityBase
     #[ORM\Column]
     #[Groups(['write', 'read'])]
     private ?float $priceNet = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['write', 'read'])]
+    private ?string $category = null;
 
     public function getId(): ?Uuid
     {
@@ -103,6 +133,18 @@ class ConfigRateHours extends EntityBase
     public function setPriceNet(float $priceNet): self
     {
         $this->priceNet = $priceNet;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

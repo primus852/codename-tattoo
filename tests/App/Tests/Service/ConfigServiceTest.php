@@ -119,6 +119,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
+                'P1',
                 array($existing)
             );
         }
@@ -141,6 +142,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
+                'P1',
                 array($existing)
             );
         }
@@ -163,6 +165,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
+                'P1',
                 array($existing)
             );
         }
@@ -184,6 +187,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
+                'P1',
                 array($existing)
             );
 

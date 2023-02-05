@@ -20,4 +20,8 @@ final class ConfigRateHoursCreateDto
     #[Groups(['write', 'read'])]
     public float $priceNet;
 
+    #[Assert\NotBlank]
+    #[Groups(['write', 'read'])]
+    public string $category;
+
 }

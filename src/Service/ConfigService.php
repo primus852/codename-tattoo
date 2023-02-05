@@ -10,6 +10,51 @@ use DateTimeImmutable;
 class ConfigService
 {
 
+    public static function getRateHoursBetweenDates(DateTimeImmutable $from, DateTimeImmutable $to, array $configuredHours): array
+    {
+
+        /**
+         * Divide the interval in minutes
+         */
+        $diff = $from->diff($to);
+        $minutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+
+        $minutes_array = [];
+        for ($i = 0; $i < $minutes; $i++) {
+            $minutes_array[] = $from->add(new \DateInterval("PT{$i}M"));
+        }
+
+        /**
+         * Check each minute if it is in a slot
+         */
+        $slots = [];
+        $unallocated = 0;
+        foreach ($minutes_array as $min) {
+            $found = false;
+            foreach ($configuredHours as $hour) {
+                $minuteIsInRateHour = self::_checkBetweenRateHours($hour->getHourFrom(), $hour->getHourTo(), $min);
+
+                if ($minuteIsInRateHour) {
+                    $found = true;
+
+                    $id = (string)$hour->getId();
+
+                    if (!array_key_exists($id, $slots)) {
+                        $slots[$id] = 0;
+                    }
+                    $slots[$id]++;
+                }
+            }
+            if (!$found) {
+                $unallocated++;
+            }
+        }
+        return array(
+            'slots' => $slots,
+            'unallocated' => $unallocated
+        );
+    }
+
     /**
      * Check if two tuples of times do overlap
      * @param array $new
@@ -45,7 +90,12 @@ class ConfigService
      */
     private static function _isValidTimeRange(DateTimeImmutable $timeStart, DateTimeImmutable $timeEnd): bool
     {
-        if ($timeStart->format('Y-m-d') !== $timeEnd->format('Y-m-d')) {
+        $oneSecond = new DateInterval('PT1S');
+
+        $end = \DateTime::createFromImmutable($timeEnd);
+        $end->sub($oneSecond);
+
+        if ($timeStart->format('Y-m-d') !== $end->format('Y-m-d')) {
             return false;
         }
         return true;
@@ -58,18 +108,21 @@ class ConfigService
         string $hourFrom,
         string $hourTo,
         float  $priceNet,
+        string $category,
         array  $existing): ConfigRateHours
     {
 
         try {
             $from = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom . ':00');
-            $to = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
+            $toMutable = \DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
         } catch (\Exception $e) {
             throw new InvalidTimeConfigException('CONFIGSERVICE_INVALID_TIMES');
         }
 
         $removeSecond = new DateInterval('PT1S');
-        $to->sub($removeSecond);
+        $toMutable->sub($removeSecond);
+
+        $to = DateTimeImmutable::createFromMutable($toMutable);
 
         $overlaps = false;
 
@@ -93,8 +146,27 @@ class ConfigService
         $crh->setHourTo($to);
         $crh->setHourFrom($from);
         $crh->setPriceNet($priceNet);
+        $crh->setCategory($category);
 
         return $crh;
+    }
 
+    /**
+     * Check if a given minute is in between DateRange, regardless of Date
+     * @param DateTimeImmutable $from
+     * @param DateTimeImmutable $to
+     * @param DateTimeImmutable $toCheck
+     * @return bool
+     */
+    private static function _checkBetweenRateHours(DateTimeImmutable $from, DateTimeImmutable $to, DateTimeImmutable $toCheck): bool
+    {
+        $startTime = $from->format("H:i:s");
+        $endTime = $to->format("H:i:s");
+        $toCheckTime = $toCheck->format("H:i:s");
+
+        if ($toCheckTime >= $startTime && $toCheckTime <= $endTime) {
+            return true;
+        }
+        return false;
     }
 }

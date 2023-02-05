@@ -5,8 +5,6 @@ namespace App\Dto\Config;
 use App\Entity\ConfigRateHours;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Validator\Constraints as Assert;
-use function Sodium\add;
 
 final class ConfigRateHoursDto
 {
@@ -21,6 +19,9 @@ final class ConfigRateHoursDto
 
     #[Groups(['write', 'read'])]
     public float $priceNet;
+
+    #[Groups(['write', 'read'])]
+    public string $category;
 
     public function __construct(ConfigRateHours $configRateHours)
     {

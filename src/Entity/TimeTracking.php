@@ -23,16 +23,23 @@ use Symfony\Component\Uid\Uuid;
     operations: [
         new Get(
             uriTemplate: '/time-tracking/{id}',
+            openapiContext: [
+                'tags' => ['Time Tracking [Persistence]']
+            ],
             output: TimeTrackingDto::class,
         ),
         new GetCollection(
             uriTemplate: '/time-trackings',
+            openapiContext: [
+                'tags' => ['Time Tracking [Persistence]']
+            ],
         ),
         new Post(
             uriTemplate: '/time-tracking',
             openapiContext: [
                 'summary' => 'Create a new TimeTracking (self or on behalf)',
                 'description' => 'Creates a new TimeTracking. Provide userId to create "on behalf" (ROLE_ADMIN only)',
+                'tags' => ['Time Tracking [Persistence]']
             ],
             input: TimeTrackingCreateDto::class,
             output: TimeTrackingDto::class,

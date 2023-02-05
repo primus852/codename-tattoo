@@ -21,6 +21,9 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new GetCollection(
+            openapiContext: [
+                'tags' => ['Client [Persistence]']
+            ],
             normalizationContext: [
                 'groups' => 'read'
             ],
@@ -28,8 +31,15 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => 'write'
             ],
         ),
-        new Get(),
+        new Get(
+            openapiContext: [
+                'tags' => ['Client [Persistence]']
+            ],
+        ),
         new Post(
+            openapiContext: [
+                'tags' => ['Client [Persistence]']
+            ],
             normalizationContext: [
                 'groups' => 'read'
             ],
