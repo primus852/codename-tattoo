@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -21,7 +22,13 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Post(
-            uriTemplate: '/user/create',
+            uriTemplate: '/user',
+            normalizationContext: [
+                'groups' => 'read'
+            ],
+            denormalizationContext: [
+                'groups' => 'write'
+            ],
             input: UserCreateDto::class,
             processor: UserProcessor::class
         ),
@@ -39,27 +46,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['write', 'read'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['write', 'read'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['write'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'serviceUser', targetEntity: TimeTracking::class)]
+    #[Groups(['write'])]
     private Collection $timeTrackings;
 
     #[ORM\Column(length: 15, unique: true, nullable: false)]
+    #[Groups(['write', 'read'])]
     private ?string $code = null;
 
     #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['write', 'read'])]
     private ?string $name = null;
 
     public function __construct()

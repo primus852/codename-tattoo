@@ -12,10 +12,11 @@ api_platform:
         # Custom mapping
         App\Exception\ClientAlreadyExistsException: 409
         App\Exception\UserAlreadyExistsException: 409
-        App\Exception\NotLoggedInException: 403
+        App\Exception\NotLoggedInException: 401
         App\Exception\TimeTrackingNotFoundException: 404
         App\Exception\UserNotFoundException: 404
-        App\Exception\NoAdminException: 403
+        App\Exception\NoAdminException: 401
+        App\Exception\InvalidTimeConfigException: 403
     swagger:
         api_keys:
             JWT:

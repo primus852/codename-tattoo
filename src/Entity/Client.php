@@ -14,14 +14,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            normalizationContext: [
+                'groups' => 'read'
+            ],
+            denormalizationContext: [
+                'groups' => 'write'
+            ],
+        ),
         new Get(),
         new Post(
+            normalizationContext: [
+                'groups' => 'read'
+            ],
+            denormalizationContext: [
+                'groups' => 'write'
+            ],
             input: ClientCreateDto::class,
             processor: ClientProcessor::class
         )
@@ -36,15 +50,19 @@ class Client extends EntityBase
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['write', 'read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['write', 'read'])]
     private ?string $nameShort = null;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: TimeTracking::class, orphanRemoval: true)]
+    #[Groups(['write', 'read'])]
     private Collection $timeTrackings;
 
     public function __construct()

@@ -1,30 +1,23 @@
 <?php
 
-namespace App\Dto\User;
+namespace App\Dto\Config;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class UserCreateDto
+final class ConfigRateHoursCreateDto
 {
     #[Assert\NotBlank]
-    #[Assert\Email]
     #[Groups(['write', 'read'])]
-    public string $email;
-
-    #[Groups(['write', 'read'])]
-    public array $roles;
-
-    #[Assert\NotBlank]
-    #[Groups(['write'])]
-    public string $password;
+    public string $hourFrom;
 
     #[Assert\NotBlank]
     #[Groups(['write', 'read'])]
-    public string $name;
+    public string $hourTo;
 
     #[Assert\NotBlank]
+    #[Assert\Positive]
     #[Groups(['write', 'read'])]
-    public string $code;
+    public float $priceNet;
 
 }
