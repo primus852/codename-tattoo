@@ -5,8 +5,8 @@ on:
     pull_request:
 
 jobs:
-    build:
-        name: Build
+    build_test:
+        name: Build & Test
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -29,10 +29,5 @@ jobs:
               run: curl http://localhost
             - name: Check HTTPS reachability
               run: curl -k https://localhost
-    test:
-      needs: build
-      name: Test
-      runs-on: ubuntu-latest
-      steps:
-        - name: Unit Testing
-          run: docker compose exec php php bin/phpunit
+            - name: Unit Testing
+              run: docker compose exec php php bin/phpunit
