@@ -8,7 +8,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Dto\TimeTracking\TimeTrackingCreateDto;
+use App\Dto\TimeTracking\TimeTrackingCreateOverrideDto;
 use App\Dto\TimeTracking\TimeTrackingDto;
+use App\Dto\TimeTracking\TimeTrackingUpdateStatusDto;
 use App\Enum\TimeTrackingStatus;
 use App\Mapping\EntityBase;
 use App\Repository\TimeTrackingRepository;
@@ -42,6 +44,26 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Time Tracking [Persistence]']
             ],
             input: TimeTrackingCreateDto::class,
+            output: TimeTrackingDto::class,
+        ),
+        new Post(
+            uriTemplate: '/process/time-tracking/override',
+            openapiContext: [
+                'summary' => 'Override a Time Tracking',
+                'description' => 'Override a Time Tracking with a new Rate Hour Config or delete the Override',
+                'tags' => ['Time Tracking [Process]']
+            ],
+            input: TimeTrackingCreateOverrideDto::class,
+            output: TimeTrackingDto::class,
+        ),
+        new Post(
+            uriTemplate: '/process/time-tracking/update-status',
+            openapiContext: [
+                'summary' => 'Update Status of a Time Tracking',
+                'description' => 'Update Status of a Time Tracking',
+                'tags' => ['Time Tracking [Process]']
+            ],
+            input: TimeTrackingUpdateStatusDto::class,
             output: TimeTrackingDto::class,
         )
     ],
@@ -84,6 +106,9 @@ class TimeTracking extends EntityBase
     #[ORM\ManyToOne(inversedBy: 'timeTrackings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
+
+    #[ORM\ManyToOne]
+    private ?ConfigRateHours $overrideRateHour = null;
 
     public function getId(): ?Uuid
     {
@@ -158,6 +183,18 @@ class TimeTracking extends EntityBase
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getOverrideRateHour(): ?ConfigRateHours
+    {
+        return $this->overrideRateHour;
+    }
+
+    public function setOverrideRateHour(?ConfigRateHours $overrideRateHour): self
+    {
+        $this->overrideRateHour = $overrideRateHour;
 
         return $this;
     }

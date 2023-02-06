@@ -7,13 +7,18 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Dto\TimeTracking\TimeTrackingDto;
 use App\Entity\Client;
+use App\Entity\ConfigRateHours;
 use App\Entity\TimeTracking;
 use App\Entity\User;
 use App\Enum\TimeTrackingStatus;
 use App\Exception\ClientNotFoundException;
-use App\Exception\NoAdminException;
+use App\Exception\ConfigBlankException;
+use App\Exception\ConfigNotFoundException;
+use App\Exception\InvalidRoleException;
 use App\Exception\NotLoggedInException;
+use App\Exception\TimeTrackingNotFoundException;
 use App\Exception\UserNotFoundException;
+use App\Service\ConfigService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Uid\Uuid;
@@ -31,19 +36,126 @@ class TimeTrackingProcessor implements ProcessorInterface
     }
 
     /**
-     * @throws NotLoggedInException
-     * @throws NoAdminException
+     * @param mixed $data
+     * @param Operation $operation
+     * @param array $uriVariables
+     * @param array $context
+     * @return TimeTrackingDto
      * @throws ClientNotFoundException
+     * @throws ConfigBlankException
+     * @throws ConfigNotFoundException
+     * @throws InvalidRoleException
+     * @throws NotLoggedInException
+     * @throws TimeTrackingNotFoundException
      * @throws UserNotFoundException
      */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TimeTrackingDto
     {
+
+        $repo = $this->entityManager->getRepository(ConfigRateHours::class);
+        $configuredRateHours = $repo->findAll();
+
         if ($operation instanceof Post) {
-            $timeTracking = $this->_createAndSaveTimeTracking($data);
-            return new TimeTrackingDto($timeTracking);
+            if ($context['operation']->getUriTemplate() === '/time-tracking') {
+                $timeTracking = $this->_createAndSaveTimeTracking($data);
+                $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
+                return new TimeTrackingDto($timeTracking, $slots);
+            }
+
+            if ($context['operation']->getUriTemplate() === '/process/time-tracking/override') {
+                $timeTracking = $this->_overrideOrResetTimeTracking($data);
+                $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
+                return new TimeTrackingDto($timeTracking, $slots);
+            }
+
+            if ($context['operation']->getUriTemplate() === '/process/time-tracking/update-status') {
+                $timeTracking = $this->_updateTimeTrackingStatus($data);
+                $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
+                return new TimeTrackingDto($timeTracking, $slots);
+            }
+        }
+        $slots = ConfigService::getRateHoursBetweenDates($data->hourFrom, $data->hourTo, $configuredRateHours);
+        return new TimeTrackingDto($data, $slots);
+    }
+
+    /**
+     * @throws TimeTrackingNotFoundException
+     * @throws InvalidRoleException
+     */
+    private function _updateTimeTrackingStatus(mixed $data): TimeTracking
+    {
+        $loggedUser = $this->_getUser();
+        $repoTimeTracking = $this->entityManager->getRepository(TimeTracking::class);
+        $timeTracking = $repoTimeTracking->find($data->timeTrackingId);
+
+        if ($timeTracking === null) {
+            throw new TimeTrackingNotFoundException('TIMETRACKING_NOT_FOUND');
         }
 
-        return new TimeTrackingDto($data);
+        $status = TimeTrackingStatus::from($data->newStatus);
+
+        /**
+         * Only FINANCE can move to finished
+         */
+        if ($status == TimeTrackingStatus::Finished && !$loggedUser->hasRole('ROLE_FINANCE')) {
+            throw new InvalidRoleException('MISSING_FINANCE_PERMISSIONS');
+        }
+
+        /**
+         * Only FINANCE can move from finished
+         */
+        if ($timeTracking->getStatus() === TimeTrackingStatus::Finished && !$loggedUser->hasRole('ROLE_FINANCE')) {
+            throw new InvalidRoleException('MISSING_FINANCE_PERMISSIONS');
+        }
+
+        $timeTracking->setStatus($status);
+        $repoTimeTracking->save($timeTracking, true);
+
+        return $timeTracking;
+
+    }
+
+    /**
+     * @throws ConfigBlankException
+     * @throws TimeTrackingNotFoundException
+     * @throws ConfigNotFoundException
+     * @throws InvalidRoleException
+     */
+    private function _overrideOrResetTimeTracking(mixed $data): TimeTracking
+    {
+        $loggedUser = $this->_getUser();
+
+        if (!$loggedUser->hasRole('ROLE_FINANCE')) {
+            throw new InvalidRoleException('MISSING_FINANCE_PERMISSIONS');
+        }
+
+        $repoTimeTracking = $this->entityManager->getRepository(TimeTracking::class);
+        $timeTracking = $repoTimeTracking->find($data->timeTrackingId);
+
+        if ($timeTracking === null) {
+            throw new TimeTrackingNotFoundException('TIMETRACKING_NOT_FOUND');
+        }
+
+        if ($data->reset) {
+            $timeTracking->setOverrideRateHour(null);
+        } else {
+
+            if (!isset($data->overrideToRateHourId)) {
+                throw new ConfigBlankException('CONFIG_RATEHOUR_BLANK');
+            }
+
+            $repoRateHour = $this->entityManager->getRepository(ConfigRateHours::class);
+            $configRateHour = $repoRateHour->find($data->overrideToRateHourId);
+
+            if ($configRateHour === null) {
+                throw new ConfigNotFoundException('RATEHOUR_NOT_FOUND');
+            }
+            $timeTracking->setOverrideRateHour($configRateHour);
+        }
+
+        $repoTimeTracking->save($timeTracking, true);
+
+        return $timeTracking;
     }
 
     /**
@@ -52,7 +164,7 @@ class TimeTrackingProcessor implements ProcessorInterface
      * @param mixed $data
      * @return TimeTracking
      * @throws ClientNotFoundException
-     * @throws NoAdminException
+     * @throws InvalidRoleException
      * @throws NotLoggedInException
      * @throws UserNotFoundException
      */
@@ -64,7 +176,7 @@ class TimeTrackingProcessor implements ProcessorInterface
         if (isset($data->userId)) {
             $user = $loggedUser;
             if (!$loggedUser->hasRole('ROLE_ADMIN')) {
-                throw new NoAdminException('MISSING_ADMIN_PERMISSIONS');
+                throw new InvalidRoleException('MISSING_ADMIN_PERMISSIONS');
             }
             if ($user === null) {
                 throw new UserNotFoundException('USER_NOT_FOUND');

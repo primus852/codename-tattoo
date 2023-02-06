@@ -9,12 +9,15 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\TimeTracking\TimeTrackingDto;
 use App\Dto\TimeTracking\TimeTrackingListDto;
+use App\Entity\ConfigRateHours;
 use App\Exception\TimeTrackingNotFoundException;
+use App\Service\ConfigService;
+use Doctrine\ORM\EntityManagerInterface;
 
 readonly class TimeTrackingProvider implements ProviderInterface
 {
 
-    public function __construct(private ProviderInterface $itemProvider, private CollectionProvider $collectionProvider)
+    public function __construct(private ProviderInterface $itemProvider, private CollectionProvider $collectionProvider, private EntityManagerInterface $entityManager)
     {
     }
 
@@ -24,9 +27,12 @@ readonly class TimeTrackingProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
 
+        $repo = $this->entityManager->getRepository(ConfigRateHours::class);
+        $configuredRateHours = $repo->findAll();
+
         if ($operation instanceof CollectionOperationInterface) {
             $timeTrackings = $this->collectionProvider->provide($operation, $uriVariables, $context);
-            return new TimeTrackingListDto($timeTrackings);
+            return new TimeTrackingListDto($timeTrackings, $configuredRateHours);
         }
 
         $timeTracking = $this->itemProvider->provide($operation, $uriVariables, $context);
@@ -34,7 +40,9 @@ readonly class TimeTrackingProvider implements ProviderInterface
         if ($timeTracking === null) {
             throw new TimeTrackingNotFoundException('TIMETRACKING_NOT_FOUND');
         }
+        $slots = ConfigService::getRateHoursBetweenDates($timeTracking->hourFrom, $timeTracking->hourTo, $configuredRateHours);
 
-        return new TimeTrackingDto($timeTracking);
+
+        return new TimeTrackingDto($timeTracking, $slots);
     }
 }

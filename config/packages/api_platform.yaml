@@ -17,6 +17,7 @@ api_platform:
         App\Exception\UserNotFoundException: 404
         App\Exception\NoAdminException: 401
         App\Exception\InvalidTimeConfigException: 403
+        App\Exception\ConfigBlankException: 403
     swagger:
         api_keys:
             JWT:

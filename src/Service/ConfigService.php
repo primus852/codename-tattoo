@@ -40,9 +40,16 @@ class ConfigService
                     $id = (string)$hour->getId();
 
                     if (!array_key_exists($id, $slots)) {
-                        $slots[$id] = 0;
+                        $slots[$id] = array(
+                            'id' => $id,
+                            'minutes' => 0,
+                            'category' => $hour->getCategory(),
+                            'priceNet' => $hour->getPriceNet(),
+                            'priceNetTotal' => 0,
+                        );
                     }
-                    $slots[$id]++;
+                    $slots[$id]['minutes']++;
+                    $slots[$id]['priceNetTotal'] = $slots[$id]['priceNet'] / 60 * $slots[$id]['minutes'];
                 }
             }
             if (!$found) {
