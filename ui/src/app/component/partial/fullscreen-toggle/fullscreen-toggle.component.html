@@ -1,0 +1,8 @@
+<button
+  class="hidden lg:inline-block ltr:ml-5 rtl:mr-5 text-2xl leading-none la"
+  [class.la-expand-arrows-alt]="!isFullscreen"
+  [class.la-compress-arrows-alt]="isFullscreen"
+  (click)="toggleFullscreen()"
+  ngxTippy="Fullscreen"
+  [tippyProps]="tooltip"
+></button>
