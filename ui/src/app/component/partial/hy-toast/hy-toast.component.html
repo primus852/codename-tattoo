@@ -1,0 +1,14 @@
+<div id="toasts-container"
+     class="toasts-container overflow-y-auto overflow-x-hidden top-auto lg:top-0 bottom-0 right-0 left-0 lg:ltr:left-auto lg:rtl:right-auto">
+  <div class="toast mb-4" [@flyInOut] *ngIf="toggleFlag"
+  >
+    <div class="toast-header">
+      <h5>{{title}}</h5>
+      <small>just now</small>
+      <button class="close" (click)="closeToast()">&times;</button>
+    </div>
+    <div class="toast-body">
+      {{context}}
+    </div>
+  </div>
+</div>

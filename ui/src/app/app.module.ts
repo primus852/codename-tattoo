@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
-import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr';
 import {AppComponent} from './app.component';
 import {DarkmodeToggleComponent} from './component/partial/darkmode-toggle/darkmode-toggle.component';
 import {NgxTippyModule} from "ngx-tippy-wrapper";
@@ -14,6 +13,8 @@ import {JwtHelperService, JWT_OPTIONS} from '@auth0/angular-jwt';
 import {AuthInterceptor} from "./service/auth/interceptor";
 import {BlankComponent} from './component/page/blank/blank.component';
 import {DashboardComponent} from './component/page/dashboard/dashboard.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { HyToastComponent } from './component/partial/hy-toast/hy-toast.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {DashboardComponent} from './component/page/dashboard/dashboard.component
     FullscreenToggleComponent,
     LoginComponent,
     BlankComponent,
-    DashboardComponent
+    DashboardComponent,
+    HyToastComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,7 @@ import {DashboardComponent} from './component/page/dashboard/dashboard.component
     AppRoutingModule,
     NgxTippyModule,
     ReactiveFormsModule,
-    ToastNoAnimationModule.forRoot(),
+    BrowserAnimationsModule, // required animations module
   ],
   providers: [
     {provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

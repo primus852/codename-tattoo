@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthService} from "../../../service/auth/auth.service";
-import {ToastrService} from "ngx-toastr";
+import {HyToastService} from "../../../service/hy-toast/hy-toast.service";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,7 @@ export class LoginComponent {
     private _fb: FormBuilder,
     private _router: Router,
     private _authService: AuthService,
-    private _toastr: ToastrService
+    private _hyToast: HyToastService
   ) {
     this.formLogin = this._fb.group({
       email: ['', Validators.required],
@@ -37,7 +37,9 @@ export class LoginComponent {
       }).finally(() => {
         this.isLoading = false;
       }).catch(() => {
-        this._toastr.success('Hello world!', 'Toastr fun!');
+        this._hyToast.showToast('Error', 'Could not log in', {
+          autoClose: true,
+        });
         this._authService.logout();
       })
     }
