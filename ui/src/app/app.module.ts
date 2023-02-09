@@ -15,6 +15,10 @@ import {BlankComponent} from './component/page/blank/blank.component';
 import {DashboardComponent} from './component/page/dashboard/dashboard.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { HyToastComponent } from './component/partial/hy-toast/hy-toast.component';
+import { FooterComponent } from './component/partial/footer/footer.component';
+import { MainComponent } from './skeleton/main/main.component';
+import { SearchInputComponent } from './component/partial/search-input/search-input.component';
+import { MenuComponent } from './component/partial/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,11 @@ import { HyToastComponent } from './component/partial/hy-toast/hy-toast.componen
     LoginComponent,
     BlankComponent,
     DashboardComponent,
-    HyToastComponent
+    HyToastComponent,
+    FooterComponent,
+    MainComponent,
+    SearchInputComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

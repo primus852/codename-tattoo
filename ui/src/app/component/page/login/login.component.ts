@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthService} from "../../../service/auth/auth.service";
 import {HyToastService} from "../../../service/hy-toast/hy-toast.service";
@@ -9,7 +9,7 @@ import {HyToastService} from "../../../service/hy-toast/hy-toast.service";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   public formLogin: FormGroup;
   public passwordVisible: boolean = false;
   public inputType: string = 'password';
@@ -27,13 +27,17 @@ export class LoginComponent {
     })
   }
 
+  ngOnInit() {
+    this._authService.logout();
+  }
+
   public doLogin() {
     const val = this.formLogin.value;
     if (val.email && val.password) {
       this.isLoading = true;
       this._authService.login(val.email, val.password).then((jwt) => {
         this._authService.setSession(jwt.token);
-        this._router.navigate(['dashboard']);
+        this._router.navigate(['blank']);
       }).finally(() => {
         this.isLoading = false;
       }).catch(() => {

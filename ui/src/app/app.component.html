@@ -1,2 +1,21 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>HyVee</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
 <app-hy-toast></app-hy-toast>
-<router-outlet></router-outlet>
+<ng-container *ngIf="!isLoggedIn">
+  <app-login></app-login>
+</ng-container>
+
+<ng-container *ngIf="isLoggedIn">
+  <app-main></app-main>
+</ng-container>
+
+</body>
+</html>

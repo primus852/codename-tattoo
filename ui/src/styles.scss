@@ -12,10 +12,9 @@
 @import url(https://fonts.googleapis.com/css?family=Inter:400,700&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Yantramanav:400,700&display=swap);
 
-app-root {
-  min-height: 100vh;
-  min-width: 100vw;
-}
+
+
+
 
 .la, .lab, .lad, .lal, .lar, .las {
   -moz-osx-font-smoothing: grayscale;
@@ -12588,7 +12587,7 @@ html {
 
 body {
   position: relative;
-  display: flex;
+  //display: flex;
   min-height: 100vh;
   width: 100%;
   --tw-bg-opacity: 1;
@@ -16108,7 +16107,7 @@ hr {
 
 .workspace {
   position: relative;
-  margin-top: 5rem;
+  margin-top: 3.5rem;
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -16124,7 +16123,6 @@ hr {
 
 @media (min-width: 768px) {
   .workspace {
-    padding-left: 2.5rem;
     padding-right: 2.5rem;
     padding-top: 2.5rem
   }

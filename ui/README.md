@@ -1,3 +1,8 @@
+# UP NEXT
+- Enrich Token with Full Name
+- Continue left Menu
+- Continue Top Menu Toggles
+
 # Ui
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.4.
