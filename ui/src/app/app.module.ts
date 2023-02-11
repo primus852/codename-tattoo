@@ -3,7 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {DarkmodeToggleComponent} from './component/partial/darkmode-toggle/darkmode-toggle.component';
+import {DarkModeToggleComponent} from './component/partial/darkmode-toggle/dark-mode-toggle.component';
 import {NgxTippyModule} from "ngx-tippy-wrapper";
 import {FullscreenToggleComponent} from './component/partial/fullscreen-toggle/fullscreen-toggle.component';
 import {LoginComponent} from './component/page/login/login.component';
@@ -19,11 +19,12 @@ import { FooterComponent } from './component/partial/footer/footer.component';
 import { MainComponent } from './skeleton/main/main.component';
 import { SearchInputComponent } from './component/partial/search-input/search-input.component';
 import { MenuComponent } from './component/partial/menu/menu.component';
+import { Page404Component } from './component/page/page404/page404.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DarkmodeToggleComponent,
+    DarkModeToggleComponent,
     FullscreenToggleComponent,
     LoginComponent,
     BlankComponent,
@@ -32,7 +33,8 @@ import { MenuComponent } from './component/partial/menu/menu.component';
     FooterComponent,
     MainComponent,
     SearchInputComponent,
-    MenuComponent
+    MenuComponent,
+    Page404Component
   ],
   imports: [
     BrowserModule,

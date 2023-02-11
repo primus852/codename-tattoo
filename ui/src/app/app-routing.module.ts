@@ -5,6 +5,7 @@ import {DashboardComponent} from "./component/page/dashboard/dashboard.component
 import {AuthGuardService} from "./service/auth/auth-guard.service";
 import {BlankComponent} from "./component/page/blank/blank.component";
 import {MainComponent} from "./skeleton/main/main.component";
+import {Page404Component} from "./component/page/page404/page404.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -14,11 +15,15 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
     path: 'blank',
     component: BlankComponent,
     canActivate: [AuthGuardService]
   },
-  {path: '**', component: LoginComponent}
+  {path: '**', component: Page404Component}
 ];
 
 @NgModule({

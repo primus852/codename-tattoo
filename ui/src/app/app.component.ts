@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "./service/auth/auth.service";
 import {Subscription} from "rxjs";
-import {HyMenuStatus, HyMenuType} from "./model/hy-menu.model";
 import {HyMenuService} from "./service/hy-menu/hy-menu.service";
+import {HyBodyService} from "./service/hy-body/hy-body.service";
+import {HyUiMode} from "./model/hy-body.model";
 
 @Component({
   selector: 'app-root',
@@ -11,23 +12,30 @@ import {HyMenuService} from "./service/hy-menu/hy-menu.service";
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  private _schemeStored = localStorage.getItem('scheme');
-  private _bodyTag = document.body;
   private _authSubscription!: Subscription;
+  private _bodySubscription!: Subscription;
 
   public isLoggedIn: boolean = false;
+  public showBackdrop: boolean = false;
+  public isLightOrDark: string = '';
+  public hyUiMode = HyUiMode;
 
-  constructor(private _auth: AuthService, private _hyMenu: HyMenuService) {
-    if (this._schemeStored) {
-      this._bodyTag.classList.remove('dark');
-      this._bodyTag.classList.remove('light');
-      this._bodyTag.classList.add(this._schemeStored);
-    }
+  constructor(
+    private _auth: AuthService,
+    private _hyMenu: HyMenuService,
+    private _hyBody: HyBodyService
+  ) {
   }
 
   ngOnInit() {
+
     this._authSubscription = this._auth.loginState.subscribe((state) => {
-      this.isLoggedIn = state;
+      this.isLoggedIn = state !== null;
+    });
+
+    this._bodySubscription = this._hyBody.bodyState.subscribe((hyBodyStatus) => {
+      this.showBackdrop = hyBodyStatus.backdropVisible;
+      this.isLightOrDark = hyBodyStatus.mode;
     });
   }
 
@@ -35,6 +43,14 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this._authSubscription) {
       this._authSubscription.unsubscribe();
     }
+
+    if (this._bodySubscription) {
+      this._bodySubscription.unsubscribe();
+    }
   }
 
+  public removeBackdrop() {
+    this._hyBody.hideBackdrop();
+    this._hyMenu.hideSubMenu();
+  }
 }

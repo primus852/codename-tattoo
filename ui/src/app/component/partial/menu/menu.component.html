@@ -6,36 +6,49 @@
 >
   <div class="menu-items">
     <div class="menu-header" [class.hidden]="!menuWide">
-      <a href="/" class="flex items-center mx-8 mt-8">
-        <span class="avatar w-16 h-16">JD</span>
+      <a [routerLink]="'profile'" class="flex items-center mx-8 mt-8">
+        <span class="avatar w-16 h-16">{{userCode}}</span>
         <div class="ltr:ml-4 rtl:mr-4 ltr:text-left rtl:text-right">
-          <h5>John Doe</h5>
-          <p class="mt-2">Editor</p>
+          <h5>{{fullName}}</h5>
+          <p class="mt-2">{{roles}}</p>
         </div>
       </a>
       <hr class="mx-8 my-4">
     </div>
-    <a href="index.html" class="link" data-toggle="tooltip-menu" data-tippy-content="Dashboard">
+    <a href="index.html" class="link">
       <span class="icon la la-laptop"></span>
       <span class="title">Dashboard</span>
     </a>
-    <button class="link" data-target="[data-menu=ui]" data-toggle="tooltip-menu" data-tippy-content="UI">
+    <button class="link" [class.active]="subMenuOpen === hySubMenu.UI" (click)="toggleSubMenu(hySubMenu.UI)" data-toggle="tooltip-menu" data-tippy-content="UI">
       <span class="icon la la-cube"></span>
       <span class="title">UI</span>
     </button>
-    <button class="link" data-target="[data-menu=pages]" data-toggle="tooltip-menu" data-tippy-content="Pages">
+    <ng-container *ngIf="menuWide">
+      <ng-container *ngTemplateOutlet="subMenuUi"></ng-container>
+    </ng-container>
+    <!-- UI -->
+    <button class="link" [class.active]="subMenuOpen === hySubMenu.PAGES" (click)="toggleSubMenu(hySubMenu.PAGES)" data-toggle="tooltip-menu" data-tippy-content="Pages">
       <span class="icon la la-file-alt"></span>
       <span class="title">Pages</span>
     </button>
-    <button class="link" data-target="[data-menu=applications]" data-toggle="tooltip-menu"
+    <ng-container *ngIf="menuWide">
+      <ng-container *ngTemplateOutlet="subMenuPages"></ng-container>
+    </ng-container>
+    <button class="link" [class.active]="subMenuOpen === hySubMenu.APPS" (click)="toggleSubMenu(hySubMenu.APPS)" data-toggle="tooltip-menu"
             data-tippy-content="Applications">
       <span class="icon la la-store"></span>
       <span class="title">Applications</span>
     </button>
-    <button class="link" data-target="[data-menu=menu]" data-toggle="tooltip-menu" data-tippy-content="Menu">
+    <ng-container *ngIf="menuWide">
+      <ng-container *ngTemplateOutlet="subMenuApps"></ng-container>
+    </ng-container>
+    <button class="link" [class.active]="subMenuOpen === hySubMenu.MENU" (click)="toggleSubMenu(hySubMenu.MENU)" data-toggle="tooltip-menu" data-tippy-content="Menu">
       <span class="icon la la-sitemap"></span>
       <span class="title">Menu</span>
     </button>
+    <ng-container *ngIf="menuWide">
+      <ng-container *ngTemplateOutlet="subMenuMenu"></ng-container>
+    </ng-container>
     <a href="blank.html" class="link" data-toggle="tooltip-menu" data-tippy-content="Blank Page">
       <span class="icon la la-file"></span>
       <span class="title">Blank Page</span>
@@ -47,28 +60,29 @@
     </a>
   </div>
 
-  <!-- Dashboard -->
-  <!--
-  <div class="menu-detail" data-menu="dashboard">
-      <div class="menu-detail-wrapper">
-          <a href="index.html">
-              <span class="la la-cube"></span>
-              Default
-          </a>
-          <a href="index.html">
-              <span class="la la-file-alt"></span>
-              Content
-          </a>
-          <a href="index.html">
-              <span class="la la-shopping-bag"></span>
-              Ecommerce
-          </a>
-      </div>
-  </div>
-  -->
-
   <!-- UI -->
-  <div class="menu-detail" data-menu="ui">
+  <ng-container *ngIf="!menuWide">
+    <ng-container *ngTemplateOutlet="subMenuUi"></ng-container>
+  </ng-container>
+
+  <!-- Pages -->
+  <ng-container *ngIf="!menuWide">
+    <ng-container *ngTemplateOutlet="subMenuPages"></ng-container>
+  </ng-container>
+
+  <!-- Applications -->
+  <ng-container *ngIf="!menuWide">
+    <ng-container *ngTemplateOutlet="subMenuApps"></ng-container>
+  </ng-container>
+
+  <!-- Menu -->
+  <ng-container *ngIf="!menuWide">
+    <ng-container *ngTemplateOutlet="subMenuMenu"></ng-container>
+  </ng-container>
+</aside>
+
+<ng-template #subMenuUi>
+  <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.UI" #collapseUi>
     <div class="menu-detail-wrapper">
       <h6 class="uppercase">Form</h6>
       <a href="form-components.html">
@@ -165,9 +179,10 @@
       </a>
     </div>
   </div>
+</ng-template>
 
-  <!-- Pages -->
-  <div class="menu-detail" data-menu="pages">
+<ng-template #subMenuPages>
+  <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.PAGES" #collapsePages>
     <div class="menu-detail-wrapper">
       <h6 class="uppercase">Authentication</h6>
       <a href="auth-login.html">
@@ -237,9 +252,10 @@
       </a>
     </div>
   </div>
+</ng-template>
 
-  <!-- Applications -->
-  <div class="menu-detail" data-menu="applications">
+<ng-template #subMenuApps>
+  <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.APPS" #collapseApps>
     <div class="menu-detail-wrapper">
       <a href="applications-media-library.html">
         <span class="la la-image"></span>
@@ -259,9 +275,10 @@
       </a>
     </div>
   </div>
+</ng-template>
 
-  <!-- Menu -->
-  <div class="menu-detail" data-menu="menu">
+<ng-template #subMenuMenu>
+  <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.MENU" #collapseMenu>
     <div class="menu-detail-wrapper">
       <a href="#no-link">
         <span class="la la-cube"></span>
@@ -328,4 +345,4 @@
       </a>
     </div>
   </div>
-</aside>
+</ng-template>

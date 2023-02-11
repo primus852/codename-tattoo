@@ -1,13 +1,8 @@
-<!doctype html>
-<html lang="en" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <title>HyVee</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
+<main
+  [class.backdrop-show]="showBackdrop"
+  [class.light]="isLightOrDark === hyUiMode.LIGHT"
+  [class.dark]="isLightOrDark === hyUiMode.DARK"
+>
 <app-hy-toast></app-hy-toast>
 <ng-container *ngIf="!isLoggedIn">
   <app-login></app-login>
@@ -17,5 +12,6 @@
   <app-main></app-main>
 </ng-container>
 
-</body>
-</html>
+</main>
+<!-- Possibly remove "backdrop_workspace" -->
+<div *ngIf="showBackdrop" class="backdrop backdrop_workspace active" (click)="removeBackdrop()"></div>

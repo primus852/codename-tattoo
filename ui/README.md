@@ -1,7 +1,8 @@
 # UP NEXT
-- Enrich Token with Full Name
-- Continue left Menu
+~~- Enrich Token with Full Name~~
+~~- Continue left Menu~~ (good enough)
 - Continue Top Menu Toggles
+- Start Stundenzettel FE
 
 # Ui
 

@@ -12353,7 +12353,7 @@ html {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
-body {
+main {
   margin: 0;
   line-height: inherit
 }
@@ -12585,7 +12585,7 @@ html {
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
-body {
+main {
   position: relative;
   //display: flex;
   min-height: 100vh;
@@ -12600,7 +12600,7 @@ body {
   color: rgb(var(--color-text-normal) / var(--tw-text-opacity))
 }
 
-body.backdrop-show {
+main.backdrop-show {
   overflow: hidden
 }
 
@@ -14588,7 +14588,8 @@ hr {
 .collapse.open {
   height: auto;
   overflow-y: auto;
-  opacity: 1
+  opacity: 1;
+  visibility: visible;
 }
 
 .accordion .accordion-header {

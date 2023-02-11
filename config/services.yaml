@@ -12,6 +12,11 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
     
+    api.event.jwt_created_listener:
+        class: App\EventListener\JWTCreatedListener
+        arguments: [ '@doctrine.orm.entity_manager' ]
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: [ '@.inner' ]
@@ -20,7 +25,7 @@ services:
         bind:
             $itemProvider: '@api_platform.doctrine.orm.state.item_provider'
             $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
-            
+    
     App\State\Config\ConfigRateHoursProvider:
         bind:
             $itemProvider: '@api_platform.doctrine.orm.state.item_provider'

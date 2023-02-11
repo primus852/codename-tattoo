@@ -14,3 +14,10 @@ export interface HyMenuSettings {
   type: HyMenuType;
 }
 
+export enum HySubMenu {
+  UI = 'ui',
+  PAGES = 'pages',
+  APPS = 'apps',
+  MENU = 'menu',
+}
+

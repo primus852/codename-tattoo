@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DarkmodeToggleComponent } from './darkmode-toggle.component';
+import { Page404Component } from './page404.component';
 
-describe('DarkmodeToggleComponent', () => {
-  let component: DarkmodeToggleComponent;
-  let fixture: ComponentFixture<DarkmodeToggleComponent>;
+describe('Page404Component', () => {
+  let component: Page404Component;
+  let fixture: ComponentFixture<Page404Component>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DarkmodeToggleComponent ]
+      declarations: [ Page404Component ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DarkmodeToggleComponent);
+    fixture = TestBed.createComponent(Page404Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

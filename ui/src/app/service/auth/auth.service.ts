@@ -4,6 +4,8 @@ import {BackendMethod, BackendRequestConfig, JWTResponseDTO} from "../../model/r
 import {JwtHelperService} from "@auth0/angular-jwt";
 import * as moment from 'moment/moment';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {AuthUser} from "../../model/auth.model";
+import {HyUtilsService} from "../hy-utils/hy-utils.service";
 
 
 @Injectable({
@@ -11,8 +13,8 @@ import {BehaviorSubject, Observable, Subject} from "rxjs";
 })
 export class AuthService {
 
-  private loginSubject: Subject<boolean> = new BehaviorSubject<boolean>(false);
-  public loginState: Observable<boolean> = this.loginSubject.asObservable();
+  private loginSubject: Subject<AuthUser | null> = new BehaviorSubject<AuthUser | null>(null);
+  public loginState: Observable<AuthUser | null> = this.loginSubject.asObservable();
 
   constructor(
     private _requestService: RequestService,
@@ -39,33 +41,73 @@ export class AuthService {
   }
 
   public setSession(token: string) {
-    const decodedToken = this._jwtHelper.decodeToken(token)
-
+    const decodedToken = this._decodedToken(token);
     localStorage.setItem('id_token', token);
     localStorage.setItem('expires_at', JSON.stringify(decodedToken.exp));
-    this.loginSubject.next(true);
+    this.loginSubject.next(this.isLoggedIn());
   }
 
   public logout() {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
-    this.loginSubject.next(false);
+    this.loginSubject.next(null);
     /**
      * TODO: Invalidate Token
      */
   }
 
-  public isLoggedIn() {
-    return moment().isBefore(this.getExpiration());
+  public isLoggedIn(): AuthUser | null {
+    const token = localStorage.getItem('id_token');
+    if (token) {
+      const decodedToken = this._decodedToken(token);
+      const notExpired = moment().isBefore(this._getExpiration());
+
+      const roles = this._extractRoles(decodedToken.roles);
+
+      if (notExpired) {
+        return {
+          code: decodedToken.code,
+          expiresAt: JSON.stringify(decodedToken.exp),
+          name: decodedToken.name,
+          token: token,
+          username: decodedToken.username,
+          roles: roles
+        }
+      } else {
+        this.logout();
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
-  public isLoggedOut() {
-    return !this.isLoggedIn();
+  private _extractRoles(rawRoles: Array<string>): Array<string> {
+
+    const roles: Array<string> = [];
+
+    rawRoles.forEach((role) => {
+      let tmpRole = role.replace('ROLE_', '').toLowerCase();
+      if (tmpRole !== 'user') {
+        roles.push(HyUtilsService.capitalizeFirstLetter(tmpRole))
+      }
+    });
+
+    if (roles.length === 0) {
+      return ['User'];
+    }
+
+    return roles;
+
   }
 
-  getExpiration() {
+  private _getExpiration() {
     const expiration: string | null = localStorage.getItem('expires_at');
     return moment.unix(Number(expiration));
+  }
+
+  private _decodedToken(token: string) {
+    return this._jwtHelper.decodeToken(token);
   }
 
 }

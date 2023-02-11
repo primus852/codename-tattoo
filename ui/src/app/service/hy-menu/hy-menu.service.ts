@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {HyMenuSettings, HyMenuStatus, HyMenuType} from "../../model/hy-menu.model";
+import {HyMenuSettings, HyMenuStatus, HyMenuType, HySubMenu} from "../../model/hy-menu.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,9 @@ export class HyMenuService {
   }
   private menuSubject: Subject<HyMenuSettings | null> = new BehaviorSubject<HyMenuSettings | null>(null);
   public menuState: Observable<HyMenuSettings | null> = this.menuSubject.asObservable();
+
+  private submenuSubject: Subject<HySubMenu | null> = new BehaviorSubject<HySubMenu | null>(null);
+  public submenuState: Observable<HySubMenu | null> = this.submenuSubject.asObservable();
 
   constructor() {
     this.menuSubject.next(this._menuSavedState());
@@ -30,6 +33,14 @@ export class HyMenuService {
     this.menuSubject.next(this._hyMenuSettings);
   }
 
+  public showSubMenu(subMenu: HySubMenu) {
+    this.submenuSubject.next(subMenu);
+  }
+
+  public hideSubMenu() {
+    this.submenuSubject.next(null);
+  }
+
   public setMenuType(type: HyMenuType): void {
     localStorage.setItem('menu_type', type);
     this._hyMenuSettings.type = type;
@@ -40,6 +51,9 @@ export class HyMenuService {
     const menuVisible: string | null = localStorage.getItem('menu_visible');
     let visibility;
 
+    /**
+     * TODO: Get Viewport, the menu needs to be hidden on mobile always on load
+     */
     if (menuVisible) {
       visibility = menuVisible as HyMenuStatus;
     } else {
