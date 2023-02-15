@@ -6,16 +6,17 @@ import {AuthService} from "../../../service/auth/auth.service";
 import {HyBodyService} from "../../../service/hy-body/hy-body.service";
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss']
+  selector: 'app-hy-menu',
+  templateUrl: './hy-menu.component.html',
+  styleUrls: ['./hy-menu.component.scss']
 })
-export class MenuComponent implements OnInit {
+export class HyMenuComponent implements OnInit {
   public menuIsVisible: boolean = true;
   public menuIconOnly: boolean = false;
   public menuWide: boolean = false;
   public subMenuOpen: HySubMenu | null = null;
   public hySubMenu = HySubMenu;
+  public linkActive: boolean = false;
 
   public userCode: string | undefined;
   public fullName: string | undefined;
@@ -24,7 +25,6 @@ export class MenuComponent implements OnInit {
   private _hyMenuSubscription!: Subscription;
   private _authUserSubscription!: Subscription;
   private _hySubMenuSubscription!: Subscription;
-
 
   constructor(
     private _hyMenu: HyMenuService,
@@ -56,28 +56,40 @@ export class MenuComponent implements OnInit {
         }
       }
     });
-    this._hyMenu.setMenuType(HyMenuType.DEFAULT);
+
+    /**
+     * Debugging only, it messes with the Responsive Logic
+     * this._hyMenu.setMenuType(HyMenuType.DEFAULT);
+     */
 
     this._hySubMenuSubscription = this._hyMenu.submenuState.subscribe((subMenuSettings) => {
       this.subMenuOpen = subMenuSettings;
+      this.linkActive = this.subMenuOpen === null;
     });
 
   }
 
 
-  public toggleSubMenu(submenu: HySubMenu) {
-    if (this.subMenuOpen === null) {
-      if (!this.menuWide) {
-        this._hyMenu.showSubMenu(submenu);
-        this._hyBody.showBackdrop();
-      } else {
-        this._hyMenu.showSubMenu(submenu);
-
-      }
-    } else {
+  public toggleSubMenu(submenu: HySubMenu | null) {
+    if (submenu === null) {
       this._hyMenu.hideSubMenu();
       if (!this.menuWide) {
         this._hyBody.hideBackdrop();
+      }
+    } else {
+      if (this.subMenuOpen === null) {
+        if (!this.menuWide) {
+          this._hyMenu.showSubMenu(submenu);
+          this._hyBody.showBackdrop();
+        } else {
+          this._hyMenu.showSubMenu(submenu);
+
+        }
+      } else {
+        this._hyMenu.hideSubMenu();
+        if (!this.menuWide) {
+          this._hyBody.hideBackdrop();
+        }
       }
     }
   }

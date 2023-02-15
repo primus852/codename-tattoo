@@ -19,6 +19,10 @@
       <span class="icon la la-laptop"></span>
       <span class="title">Dashboard</span>
     </a>
+    <a [routerLink]="'/stundenzettel'" [routerLinkActive]="'active'" (click)="toggleSubMenu(null)" class="link">
+      <span class="icon la la-file"></span>
+      <span class="title">Stundenzettel</span>
+    </a>
     <button class="link" [class.active]="subMenuOpen === hySubMenu.UI" (click)="toggleSubMenu(hySubMenu.UI)" data-toggle="tooltip-menu" data-tippy-content="UI">
       <span class="icon la la-cube"></span>
       <span class="title">UI</span>
@@ -49,7 +53,7 @@
     <ng-container *ngIf="menuWide">
       <ng-container *ngTemplateOutlet="subMenuMenu"></ng-container>
     </ng-container>
-    <a href="blank.html" class="link" data-toggle="tooltip-menu" data-tippy-content="Blank Page">
+    <a [routerLink]="'/blank'" [routerLinkActive]="'active'" (click)="toggleSubMenu(null)" class="link">
       <span class="icon la la-file"></span>
       <span class="title">Blank Page</span>
     </a>

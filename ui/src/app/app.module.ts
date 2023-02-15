@@ -18,8 +18,10 @@ import { HyToastComponent } from './component/partial/hy-toast/hy-toast.componen
 import { FooterComponent } from './component/partial/footer/footer.component';
 import { MainComponent } from './skeleton/main/main.component';
 import { SearchInputComponent } from './component/partial/search-input/search-input.component';
-import { MenuComponent } from './component/partial/menu/menu.component';
+import { HyMenuComponent } from './component/partial/hy-menu/hy-menu.component';
 import { Page404Component } from './component/page/page404/page404.component';
+import { HyBreadcrumbComponent } from './component/partial/hy-breadcrumb/hy-breadcrumb.component';
+import { HoursOverviewComponent } from './component/page/hours-overview/hours-overview.component';
 
 @NgModule({
   declarations: [
@@ -33,8 +35,10 @@ import { Page404Component } from './component/page/page404/page404.component';
     FooterComponent,
     MainComponent,
     SearchInputComponent,
-    MenuComponent,
-    Page404Component
+    HyMenuComponent,
+    Page404Component,
+    HyBreadcrumbComponent,
+    HoursOverviewComponent
   ],
   imports: [
     BrowserModule,

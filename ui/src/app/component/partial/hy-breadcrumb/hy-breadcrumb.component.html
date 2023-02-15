@@ -1,0 +1,10 @@
+<section class="breadcrumb">
+  <h1>{{pageTitle}}</h1>
+  <ul>
+    <li><a [routerLink]="pageRootLink">{{pageTitle}}</a></li>
+    <ng-container *ngFor="let subpage of pages">
+      <li class="divider la la-arrow-right"></li>
+      <li>{{subpage}}</li>
+    </ng-container>
+  </ul>
+</section>

@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject, Subscription} from "rxjs";
 import {HyMenuSettings, HyMenuStatus, HyMenuType, HySubMenu} from "../../model/hy-menu.model";
+import {HyResponsiveService} from "../hy-responsive/hy-responsive.service";
+import {HyBreakpoint} from "../../model/hy-responsive.model";
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +19,14 @@ export class HyMenuService {
   private submenuSubject: Subject<HySubMenu | null> = new BehaviorSubject<HySubMenu | null>(null);
   public submenuState: Observable<HySubMenu | null> = this.submenuSubject.asObservable();
 
-  constructor() {
-    this.menuSubject.next(this._menuSavedState());
+  private _breakPoint$: Subscription;
+  private _breakPointValue: HyBreakpoint | null = null;
+
+  constructor(private _hyResponsive: HyResponsiveService) {
+    this._breakPoint$ = this._hyResponsive.mediaBreakpoint$.subscribe((breakpoint) => {
+      this._breakPointValue = breakpoint;
+      this.menuSubject.next(this._menuSavedState());
+    })
   }
 
   public showMenu(): void {
@@ -51,13 +59,22 @@ export class HyMenuService {
     const menuVisible: string | null = localStorage.getItem('menu_visible');
     let visibility;
 
-    /**
-     * TODO: Get Viewport, the menu needs to be hidden on mobile always on load
-     */
-    if (menuVisible) {
-      visibility = menuVisible as HyMenuStatus;
+    if (this._breakPointValue !== null) {
+      if (this._breakPointValue.valueOf() <= HyBreakpoint.MD.valueOf()) {
+        visibility = HyMenuStatus.HIDDEN;
+      } else {
+        if (menuVisible) {
+          visibility = menuVisible as HyMenuStatus;
+        } else {
+          visibility = HyMenuStatus.VISIBLE;
+        }
+      }
     } else {
-      visibility = HyMenuStatus.VISIBLE;
+      if (menuVisible) {
+        visibility = menuVisible as HyMenuStatus;
+      } else {
+        visibility = HyMenuStatus.VISIBLE;
+      }
     }
 
     const menuType: string | null = localStorage.getItem('menu_type');
