@@ -34,6 +34,7 @@ final class ConfigRateHoursDto
         $this->hourFrom = $configRateHours->getHourFrom()->format('H:i');
         $this->hourTo = $configRateHours->getHourTo()->add($oneSecond)->format('H:i');
         $this->priceNet = $configRateHours->getPriceNet();
+        $this->category = $configRateHours->getCategory();
     }
 
 }

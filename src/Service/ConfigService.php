@@ -29,6 +29,8 @@ class ConfigService
          */
         $slots = [];
         $unallocated = 0;
+        $totalMinutes = 0;
+        $totalPriceNet = 0;
         foreach ($minutes_array as $min) {
             $found = false;
             foreach ($configuredHours as $hour) {
@@ -39,6 +41,9 @@ class ConfigService
 
                     $id = (string)$hour->getId();
 
+                    /**
+                     * TODO: Possibly sort by startDate
+                     */
                     if (!array_key_exists($id, $slots)) {
                         $slots[$id] = array(
                             'id' => $id,
@@ -56,9 +61,22 @@ class ConfigService
                 $unallocated++;
             }
         }
+
+        $slotArray = [];
+
+        foreach($slots as $slot){
+            $slotArray[] = $slot;
+            $totalMinutes += $slot['minutes'];
+            $totalPriceNet += $slot['priceNetTotal'];
+        }
+
         return array(
-            'slots' => $slots,
-            'unallocated' => $unallocated
+            'slots' => $slotArray,
+            'unallocated' => $unallocated,
+            'total' => array(
+                'minutes' => $totalMinutes,
+                'priceNet' => $totalPriceNet,
+            )
         );
     }
 

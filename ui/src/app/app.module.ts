@@ -1,5 +1,7 @@
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {registerLocaleData} from '@angular/common';
+import localeDe from '@angular/common/locales/de';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -14,14 +16,17 @@ import {AuthInterceptor} from "./service/auth/interceptor";
 import {BlankComponent} from './component/page/blank/blank.component';
 import {DashboardComponent} from './component/page/dashboard/dashboard.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import { HyToastComponent } from './component/partial/hy-toast/hy-toast.component';
-import { FooterComponent } from './component/partial/footer/footer.component';
-import { MainComponent } from './skeleton/main/main.component';
-import { SearchInputComponent } from './component/partial/search-input/search-input.component';
-import { HyMenuComponent } from './component/partial/hy-menu/hy-menu.component';
-import { Page404Component } from './component/page/page404/page404.component';
-import { HyBreadcrumbComponent } from './component/partial/hy-breadcrumb/hy-breadcrumb.component';
-import { HoursOverviewComponent } from './component/page/hours-overview/hours-overview.component';
+import {HyToastComponent} from './component/partial/hy-toast/hy-toast.component';
+import {FooterComponent} from './component/partial/footer/footer.component';
+import {MainComponent} from './skeleton/main/main.component';
+import {SearchInputComponent} from './component/partial/search-input/search-input.component';
+import {HyMenuComponent} from './component/partial/hy-menu/hy-menu.component';
+import {Page404Component} from './component/page/page404/page404.component';
+import {HyBreadcrumbComponent} from './component/partial/hy-breadcrumb/hy-breadcrumb.component';
+import {TimeTrackingOverviewComponent} from './component/page/time-tracking-overview/time-tracking-overview.component';
+import { MinutesToHoursPipe } from './pipe/minutes-to-hours.pipe';
+
+registerLocaleData(localeDe);
 
 @NgModule({
   declarations: [
@@ -38,7 +43,8 @@ import { HoursOverviewComponent } from './component/page/hours-overview/hours-ov
     HyMenuComponent,
     Page404Component,
     HyBreadcrumbComponent,
-    HoursOverviewComponent
+    TimeTrackingOverviewComponent,
+    MinutesToHoursPipe
   ],
   imports: [
     BrowserModule,

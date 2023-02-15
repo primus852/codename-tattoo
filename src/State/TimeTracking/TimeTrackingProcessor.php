@@ -59,23 +59,23 @@ class TimeTrackingProcessor implements ProcessorInterface
             if ($context['operation']->getUriTemplate() === '/time-tracking') {
                 $timeTracking = $this->_createAndSaveTimeTracking($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots);
+                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
             }
 
             if ($context['operation']->getUriTemplate() === '/process/time-tracking/override') {
                 $timeTracking = $this->_overrideOrResetTimeTracking($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots);
+                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
             }
 
             if ($context['operation']->getUriTemplate() === '/process/time-tracking/update-status') {
                 $timeTracking = $this->_updateTimeTrackingStatus($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots);
+                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
             }
         }
         $slots = ConfigService::getRateHoursBetweenDates($data->hourFrom, $data->hourTo, $configuredRateHours);
-        return new TimeTrackingDto($data, $slots);
+        return new TimeTrackingDto($data, $slots, $configuredRateHours);
     }
 
     /**

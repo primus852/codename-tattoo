@@ -18,7 +18,7 @@ final class TimeTrackingListDto
     {
         foreach ($timeTrackingsPaginator as $timeTracking) {
             $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-            $this->timeTrackings[] = new TimeTrackingDto($timeTracking, $slots);
+            $this->timeTrackings[] = new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
         }
     }
 }

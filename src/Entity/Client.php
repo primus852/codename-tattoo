@@ -75,6 +75,9 @@ class Client extends EntityBase
     #[Groups(['write', 'read'])]
     private Collection $timeTrackings;
 
+    #[ORM\Column(length: 15, nullable: false)]
+    private ?string $clientNumber = null;
+
     public function __construct()
     {
         $this->timeTrackings = new ArrayCollection();
@@ -135,6 +138,18 @@ class Client extends EntityBase
                 $timeTracking->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClientNumber(): ?string
+    {
+        return $this->clientNumber;
+    }
+
+    public function setClientNumber(?string $clientNumber): self
+    {
+        $this->clientNumber = $clientNumber;
 
         return $this;
     }

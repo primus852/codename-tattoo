@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HoursOverviewComponent } from './hours-overview.component';
+import { TimeTrackingOverviewComponent } from './time-tracking-overview.component';
 
 describe('HoursOverviewComponent', () => {
-  let component: HoursOverviewComponent;
-  let fixture: ComponentFixture<HoursOverviewComponent>;
+  let component: TimeTrackingOverviewComponent;
+  let fixture: ComponentFixture<TimeTrackingOverviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HoursOverviewComponent ]
+      declarations: [ TimeTrackingOverviewComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HoursOverviewComponent);
+    fixture = TestBed.createComponent(TimeTrackingOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

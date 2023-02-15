@@ -13,9 +13,6 @@
 @import url(https://fonts.googleapis.com/css?family=Yantramanav:400,700&display=swap);
 
 
-
-
-
 .la, .lab, .lad, .lal, .lar, .las {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -13942,7 +13939,16 @@ hr {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
   background-color: rgb(var(--color-background) / var(--tw-bg-opacity));
   font-size: 1.25rem;
-  line-height: 1.75rem
+  line-height: 1.75rem;
+
+  &.rateCategory {
+    display: inline-flex;
+    height: 1.5rem;
+    width: 1.5rem;
+    font-size: 0.75rem;
+    line-height: 1.0rem;
+    border-width: 1px;
+  }
 }
 
 .avatar img {
@@ -15175,10 +15181,7 @@ hr {
 }
 
 .table tbody tr td {
-  padding-left: .5rem;
-  padding-right: .5rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem
+  padding: .25rem .5rem;
 }
 
 .table tbody tr.row_selected {
@@ -16124,7 +16127,7 @@ hr {
 
 @media (min-width: 768px) {
   .workspace {
-    padding-right: 2.5rem;
+    //padding-right: 2.5rem;
     padding-top: 2.5rem
   }
 }

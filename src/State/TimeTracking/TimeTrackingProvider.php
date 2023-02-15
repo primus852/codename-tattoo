@@ -43,6 +43,6 @@ readonly class TimeTrackingProvider implements ProviderInterface
         $slots = ConfigService::getRateHoursBetweenDates($timeTracking->hourFrom, $timeTracking->hourTo, $configuredRateHours);
 
 
-        return new TimeTrackingDto($timeTracking, $slots);
+        return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
     }
 }

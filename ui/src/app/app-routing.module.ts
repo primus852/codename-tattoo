@@ -4,9 +4,8 @@ import {LoginComponent} from "./component/page/login/login.component";
 import {DashboardComponent} from "./component/page/dashboard/dashboard.component";
 import {AuthGuardService} from "./service/auth/auth-guard.service";
 import {BlankComponent} from "./component/page/blank/blank.component";
-import {MainComponent} from "./skeleton/main/main.component";
 import {Page404Component} from "./component/page/page404/page404.component";
-import {HoursOverviewComponent} from "./component/page/hours-overview/hours-overview.component";
+import {TimeTrackingOverviewComponent} from "./component/page/time-tracking-overview/time-tracking-overview.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -21,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'stundenzettel',
-    component: HoursOverviewComponent,
+    component: TimeTrackingOverviewComponent,
     canActivate: [AuthGuardService]
   },
   {
