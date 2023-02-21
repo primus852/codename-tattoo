@@ -14,6 +14,8 @@ use App\Mapping\EntityBase;
 use App\Repository\ConfigRateHoursRepository;
 use App\State\Config\ConfigRateHoursProcessor;
 use App\State\Config\ConfigRateHoursProvider;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -40,6 +42,22 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'summary' => 'Get all Rate Hours for a given Date Range',
                 'description' => 'Retrieves a list of all Rate Hours and their amounts for a given Date Range',
+                'tags' => ['Rate Hours [Process]']
+            ],
+            normalizationContext: [
+                'groups' => 'read'
+            ],
+            denormalizationContext: [
+                'groups' => 'write'
+            ],
+            input: ConfigRateHoursRequestSlotsDto::class,
+            output: ConfigRateHoursSlotsDto::class
+        ),
+        new Post(
+            uriTemplate: '/process/rate-hour/assign-day-of-week',
+            openapiContext: [
+                'summary' => 'Assign a Rate Hour to Day(s) of the Week',
+                'description' => 'Assign a Rate Hour to Day(s) of the Week. If no Day is assigned, this Rate Hour is applied to every Day of the Week',
                 'tags' => ['Rate Hours [Process]']
             ],
             normalizationContext: [
@@ -96,6 +114,14 @@ class ConfigRateHours extends EntityBase
     #[Groups(['write', 'read'])]
     private ?string $category = null;
 
+    #[ORM\ManyToMany(targetEntity: ConfigWeekDays::class, mappedBy: 'configRateHour')]
+    private Collection $configWeekDays;
+
+    public function __construct()
+    {
+        $this->configWeekDays = new ArrayCollection();
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -145,6 +171,33 @@ class ConfigRateHours extends EntityBase
     public function setCategory(string $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ConfigWeekDays>
+     */
+    public function getConfigWeekDays(): Collection
+    {
+        return $this->configWeekDays;
+    }
+
+    public function addConfigWeekDay(ConfigWeekDays $configWeekDay): self
+    {
+        if (!$this->configWeekDays->contains($configWeekDay)) {
+            $this->configWeekDays->add($configWeekDay);
+            $configWeekDay->addConfigRateHour($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConfigWeekDay(ConfigWeekDays $configWeekDay): self
+    {
+        if ($this->configWeekDays->removeElement($configWeekDay)) {
+            $configWeekDay->removeConfigRateHour($this);
+        }
 
         return $this;
     }

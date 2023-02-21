@@ -53,9 +53,11 @@
         </td>
         <td>{{tt.minutesPerSlot.total.minutes | minutesToHours}}</td>
         <td>
-            <div class="avatar rateCategory mx-0.5" *ngFor="let cfgRateHour of tt.configuredRateHours">
-              {{cfgRateHour.category}}
+          <ng-container *ngFor="let category of categories">
+            <div class="avatar rateCategory mx-0.5" *ngIf="">
+              {{category}}
             </div>
+          </ng-container>
         </td>
         <td>{{tt.minutesPerSlot.total.priceNet | currency:'EUR':'symbol':'3.2-2':'de'}}</td>
         <td>{{tt.description}}</td>
