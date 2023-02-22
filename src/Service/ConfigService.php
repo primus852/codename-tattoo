@@ -64,7 +64,7 @@ class ConfigService
 
         $slotArray = [];
 
-        foreach($slots as $slot){
+        foreach ($slots as $slot) {
             $slotArray[] = $slot;
             $totalMinutes += $slot['minutes'];
             $totalPriceNet += $slot['priceNetTotal'];
@@ -134,7 +134,9 @@ class ConfigService
         string $hourTo,
         float  $priceNet,
         string $category,
-        array  $existing): ConfigRateHours
+        array  $daysOfWeek,
+        array  $existing,
+    ): ConfigRateHours
     {
 
         try {
@@ -158,8 +160,12 @@ class ConfigService
             );
 
             if ($isOverlapping) {
-                $overlaps = true;
-                break;
+                foreach ($config->getConfigWeekDays() as $configWeekDay) {
+                    if (in_array($configWeekDay->getDayOfWeek(), $daysOfWeek)) {
+                        $overlaps = true;
+                        break 2;
+                    }
+                }
             }
         }
 

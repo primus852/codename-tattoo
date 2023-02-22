@@ -24,4 +24,8 @@ final class ConfigRateHoursCreateDto
     #[Groups(['write', 'read'])]
     public string $category;
 
+    #[Assert\NotBlank]
+    #[Groups(['write', 'read'])]
+    public array $daysOfWeek;
+
 }

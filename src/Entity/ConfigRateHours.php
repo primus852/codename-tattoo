@@ -10,6 +10,7 @@ use App\Dto\Config\ConfigRateHoursCreateDto;
 use App\Dto\Config\ConfigRateHoursDto;
 use App\Dto\Config\ConfigRateHoursRequestSlotsDto;
 use App\Dto\Config\ConfigRateHoursSlotsDto;
+use App\Dto\Config\ConfigRateWeekToHoursRequestDto;
 use App\Mapping\EntityBase;
 use App\Repository\ConfigRateHoursRepository;
 use App\State\Config\ConfigRateHoursProcessor;
@@ -54,7 +55,7 @@ use Symfony\Component\Uid\Uuid;
             output: ConfigRateHoursSlotsDto::class
         ),
         new Post(
-            uriTemplate: '/process/rate-hour/assign-day-of-week',
+            uriTemplate: '/process/rate-hour/assign-days-of-week',
             openapiContext: [
                 'summary' => 'Assign a Rate Hour to Day(s) of the Week',
                 'description' => 'Assign a Rate Hour to Day(s) of the Week. If no Day is assigned, this Rate Hour is applied to every Day of the Week',
@@ -66,8 +67,8 @@ use Symfony\Component\Uid\Uuid;
             denormalizationContext: [
                 'groups' => 'write'
             ],
-            input: ConfigRateHoursRequestSlotsDto::class,
-            output: ConfigRateHoursSlotsDto::class
+            input: ConfigRateWeekToHoursRequestDto::class,
+            output: ConfigRateHoursDto::class
         ),
         new Post(
             uriTemplate: '/config/rate-hour',

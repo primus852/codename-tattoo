@@ -23,6 +23,9 @@ final class ConfigRateHoursDto
     #[Groups(['write', 'read'])]
     public string $category;
 
+    #[Groups(['write', 'read'])]
+    public array $attachedWeekDays;
+
     public function __construct(ConfigRateHours $configRateHours)
     {
         /**
@@ -35,6 +38,13 @@ final class ConfigRateHoursDto
         $this->hourTo = $configRateHours->getHourTo()->add($oneSecond)->format('H:i');
         $this->priceNet = $configRateHours->getPriceNet();
         $this->category = $configRateHours->getCategory();
+
+        $this->attachedWeekDays = array();
+
+        foreach($configRateHours->getConfigWeekDays() as $configWeekDay){
+            $this->attachedWeekDays[] = new ConfigWeekDayDto($configWeekDay);
+        }
+
     }
 
 }

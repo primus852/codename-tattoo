@@ -3,6 +3,7 @@
 namespace App\Tests\Service;
 
 use App\Entity\ConfigRateHours;
+use App\Entity\ConfigWeekDays;
 use App\Exception\InvalidTimeConfigException;
 use App\Service\ConfigService;
 use DateTimeImmutable;
@@ -105,13 +106,37 @@ class ConfigServiceTest extends TestCase
     /**
      * @throws InvalidTimeConfigException
      */
+    public function testValidOverlapCreationOfRateHourConfigEntity(){
+        /**
+         * Invalid by Overlap, but allowed as no attached Days overlap
+         */
+        foreach ($this->invalidSame as $item) {
+
+            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end'], array(2));
+
+            $entry = ConfigService::createNewConfigRateHour(
+                $item['new']['start'],
+                $item['new']['end'],
+                140,
+                'P1',
+                array(1,3),
+                array($existing)
+            );
+
+            $this->assertInstanceOf(ConfigRateHours::class, $entry);
+        }
+    }
+
+    /**
+     * @throws InvalidTimeConfigException
+     */
     public function testInvalidOverlapCreationOfRateHourConfigEntity(){
         /**
          * Invalid by Overlap
          */
         foreach ($this->invalidSame as $item) {
 
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end']);
+            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end'], array(2,3));
 
             $this->expectException(Exception::class);
             $this->expectExceptionMessage('CONFIGSERVICE_OVERLAP_TIMES');
@@ -120,6 +145,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['end'],
                 140,
                 'P1',
+                array(1,3),
                 array($existing)
             );
         }
@@ -143,6 +169,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['end'],
                 140,
                 'P1',
+                array(1,3),
                 array($existing)
             );
         }
@@ -166,6 +193,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['end'],
                 140,
                 'P1',
+                array(1,3),
                 array($existing)
             );
         }
@@ -188,6 +216,7 @@ class ConfigServiceTest extends TestCase
                 $item['new']['end'],
                 140,
                 'P1',
+                array(1,3),
                 array($existing)
             );
 
@@ -254,13 +283,19 @@ class ConfigServiceTest extends TestCase
         return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hour . ':00');
     }
 
-    private function _createRateHoursConfigEntity(string $hourFrom, string $hourTo): ConfigRateHours
+    private function _createRateHoursConfigEntity(string $hourFrom, string $hourTo, array $attachedWeekDays = array()): ConfigRateHours
     {
         $from = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom . ':00');
         $to = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
         $entity = new ConfigRateHours();
         $entity->setHourFrom($from);
         $entity->setHourTo($to);
+
+        foreach($attachedWeekDays as $attachedWeekDay){
+            $wd = new ConfigWeekDays();
+            $wd->setDayOfWeek($attachedWeekDay);
+            $entity->addConfigWeekDay($wd);
+        }
 
         return $entity;
     }
