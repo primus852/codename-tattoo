@@ -13,6 +13,7 @@ use App\Dto\Config\ConfigRateHoursSlotsDto;
 use App\Dto\Config\ConfigRateWeekToHoursRequestDto;
 use App\Mapping\EntityBase;
 use App\Repository\ConfigRateHoursRepository;
+use App\State\Config\ConfigRateHoursCollectionProvider;
 use App\State\Config\ConfigRateHoursProcessor;
 use App\State\Config\ConfigRateHoursProvider;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,12 +32,14 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Rate Hours [Persistence]']
             ],
+            provider: ConfigRateHoursCollectionProvider::class
         ),
         new Get(
             uriTemplate: '/config/rate-hour/{id}',
             openapiContext: [
                 'tags' => ['Rate Hours [Persistence]']
             ],
+            provider: ConfigRateHoursProvider::class
         ),
         new Post(
             uriTemplate: '/process/rate-hour/combined',
@@ -52,7 +55,8 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => 'write'
             ],
             input: ConfigRateHoursRequestSlotsDto::class,
-            output: ConfigRateHoursSlotsDto::class
+            output: ConfigRateHoursSlotsDto::class,
+            processor: ConfigRateHoursProcessor::class
         ),
         new Post(
             uriTemplate: '/process/rate-hour/assign-days-of-week',
@@ -86,8 +90,8 @@ use Symfony\Component\Uid\Uuid;
         )
     ],
     formats: ["json"],
-    provider: ConfigRateHoursProvider::class,
-    processor: ConfigRateHoursProcessor::class
+//    provider: ConfigRateHoursProvider::class,
+//    processor: ConfigRateHoursProcessor::class
 )]
 #[ORM\HasLifecycleCallbacks]
 class ConfigRateHours extends EntityBase

@@ -2,9 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\ConfigPrice;
 use App\Entity\ConfigRateHours;
 use App\Exception\InvalidTimeConfigException;
 use DateInterval;
+use DateTime;
 use DateTimeImmutable;
 
 class ConfigService
@@ -95,11 +97,11 @@ class ConfigService
         $existing_end = $existing[1];
 
         if (!self::_isValidTimeRange($new_start, $new_end)) {
-            throw new InvalidTimeConfigException('CONFIGSERVICE_INVALID_TIMES');
+            throw new InvalidTimeConfigException('CONFIG_INVALID_TIMES');
         }
 
         if ($new_end <= $new_start) {
-            throw new InvalidTimeConfigException('CONFIGSERVICE_START_SMALLER_END');
+            throw new InvalidTimeConfigException('CONFIG_START_SMALLER_END');
         }
 
         return
@@ -109,15 +111,15 @@ class ConfigService
     }
 
     /**
-     * @param DateTimeImmutable $timeStart
-     * @param DateTimeImmutable $timeEnd
+     * @param DateTime $timeStart
+     * @param DateTime $timeEnd
      * @return bool
      */
-    private static function _isValidTimeRange(DateTimeImmutable $timeStart, DateTimeImmutable $timeEnd): bool
+    private static function _isValidTimeRange(DateTime $timeStart, DateTime $timeEnd): bool
     {
         $oneSecond = new DateInterval('PT1S');
 
-        $end = \DateTime::createFromImmutable($timeEnd);
+        $end = clone $timeEnd;
         $end->sub($oneSecond);
 
         if ($timeStart->format('Y-m-d') !== $end->format('Y-m-d')) {
@@ -127,7 +129,68 @@ class ConfigService
     }
 
     /**
+     * @param string $timeFrom
+     * @param string $timeTo
+     * @param float $priceNet
+     * @param string $category
+     * @param string $name
+     * @param int $weekDay
+     * @param ConfigPrice[] $existing
+     * @return ConfigPrice
      * @throws InvalidTimeConfigException
+     */
+    public static function createNewPrice(
+        string $timeFrom,
+        string $timeTo,
+        float  $priceNet,
+        string $category,
+        string $name,
+        int    $weekDay,
+        array  $existing
+    ): ConfigPrice
+    {
+
+        try {
+            $from = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $timeFrom);
+            $to = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $timeTo);
+        } catch (\Exception $e) {
+            throw new InvalidTimeConfigException('CONFIG_INVALID_TIMES');
+        }
+
+        $removeSecond = new DateInterval('PT1S');
+        $to->sub($removeSecond);
+
+        $overlaps = false;
+        foreach ($existing as $price) {
+            $isOverlapping = self::checkOverlappingTimes(
+                [$from, $to],
+                [$price->getTimeFrom(), $price->getTimeTo()]
+            );
+
+            if ($isOverlapping && $price->getWeekDay() === $weekDay) {
+                $overlaps = true;
+                break;
+            }
+        }
+
+        if ($overlaps) {
+            throw new InvalidTimeConfigException('CONFIG_OVERLAP_TIMES');
+        }
+
+        $price = new ConfigPrice();
+        $price->setPriceNet($priceNet);
+        $price->setName($name);
+        $price->setCategory($category);
+        $price->setTimeFrom(DateTimeImmutable::createFromMutable($from));
+        $price->setTimeTo(DateTimeImmutable::createFromMutable($to));
+        $price->setWeekDay($weekDay);
+
+        return $price;
+    }
+
+    /**
+     * @throws InvalidTimeConfigException
+     * @deprecated
      */
     public static function createNewConfigRateHour(
         string $hourFrom,
@@ -141,7 +204,7 @@ class ConfigService
 
         try {
             $from = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom . ':00');
-            $toMutable = \DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
+            $toMutable = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
         } catch (\Exception $e) {
             throw new InvalidTimeConfigException('CONFIGSERVICE_INVALID_TIMES');
         }

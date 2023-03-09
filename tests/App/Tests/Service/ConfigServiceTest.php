@@ -2,10 +2,12 @@
 
 namespace App\Tests\Service;
 
+use App\Entity\ConfigPrice;
 use App\Entity\ConfigRateHours;
 use App\Entity\ConfigWeekDays;
 use App\Exception\InvalidTimeConfigException;
 use App\Service\ConfigService;
+use DateTime;
 use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -15,137 +17,132 @@ class ConfigServiceTest extends TestCase
 
     private array $overlapping = array(
         [
-            'new' => array('start' => '11:00', 'end' => '21:00'),
-            'existing' => array('start' => '16:00', 'end' => '21:00')
+            'new' => array('start' => '11:00:00', 'end' => '21:00:00'),
+            'existing' => array('start' => '16:00:00', 'end' => '21:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '16:00', 'end' => '21:00'),
-            'existing' => array('start' => '11:00', 'end' => '21:00')
+            'new' => array('start' => '16:00:00', 'end' => '21:00:00'),
+            'existing' => array('start' => '11:00:00', 'end' => '21:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '10:00', 'end' => '20:00'),
-            'existing' => array('start' => '05:00', 'end' => '15:00')
+            'new' => array('start' => '10:00:00', 'end' => '20:00:00'),
+            'existing' => array('start' => '05:00:00', 'end' => '15:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '20:00', 'end' => '21:00'),
-            'existing' => array('start' => '10:00', 'end' => '20:30')
+            'new' => array('start' => '20:00:00', 'end' => '21:00:00'),
+            'existing' => array('start' => '10:00:00', 'end' => '20:30:00', 'weekDay' => 2)
+        ],
+    );
+
+    private array $overlappingDay = array(
+        [
+            'new' => array('start' => '05:00:00', 'end' => '16:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 1)
+        ],
+    );
+
+    private array $nonOverlappingDay = array(
+        [
+            'new' => array('start' => '05:00:00', 'end' => '16:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
     );
 
     private array $nonOverlapping = array(
         [
-            'new' => array('start' => '05:00', 'end' => '10:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '05:00:00', 'end' => '10:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '20:00', 'end' => '21:00'),
-            'existing' => array('start' => '10:00', 'end' => '20:00')
-        ],
+            'new' => array('start' => '20:00:00', 'end' => '21:00:00'),
+            'existing' => array('start' => '10:00:00', 'end' => '20:00:00', 'weekDay' => 2)
+        ]
     );
 
     private array $invalid = array(
         [
-            'new' => array('start' => '10:00', 'end' => '10:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '10:00:00', 'end' => '10:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '10:00', 'end' => '09:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '10:00:00', 'end' => '09:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '10:00', 'end' => '31:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '10:00:00', 'end' => '31:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '31:00', 'end' => '10:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '31:00:00', 'end' => '10:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
     );
 
     private array $invalidSame = array(
         [
-            'new' => array('start' => '17:00', 'end' => '18:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '17:00:00', 'end' => '18:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 1)
         ],
     );
 
     private array $invalidHours = array(
         [
-            'new' => array('start' => '32:00', 'end' => '11:00'),
-            'existing' => array('start' => '22:00', 'end' => '23:00')
+            'new' => array('start' => '32:00:00', 'end' => '11:00:00'),
+            'existing' => array('start' => '22:00:00', 'end' => '23:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '11:00', 'end' => '32:00'),
-            'existing' => array('start' => '22:00', 'end' => '23:00')
+            'new' => array('start' => '11:00:00', 'end' => '32:00:00'),
+            'existing' => array('start' => '22:00:00', 'end' => '23:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '31:00', 'end' => '32:00'),
-            'existing' => array('start' => '22:00', 'end' => '23:00')
+            'new' => array('start' => '31:00:00', 'end' => '32:00:00'),
+            'existing' => array('start' => '22:00:00', 'end' => '23:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => 'xxx', 'end' => '12:00'),
-            'existing' => array('start' => '22:00', 'end' => '23:00')
+            'new' => array('start' => 'xxx', 'end' => '12:00:00'),
+            'existing' => array('start' => '22:00:00', 'end' => '23:00:00', 'weekDay' => 2)
         ],
     );
 
     private array $invalidEnd = array(
         [
-            'new' => array('start' => '10:00', 'end' => '10:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '10:00:00', 'end' => '10:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '10:00', 'end' => '09:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '10:00:00', 'end' => '09:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
         [
-            'new' => array('start' => '17:00', 'end' => '10:00'),
-            'existing' => array('start' => '15:00', 'end' => '20:00')
+            'new' => array('start' => '17:00:00', 'end' => '10:00:00'),
+            'existing' => array('start' => '15:00:00', 'end' => '20:00:00', 'weekDay' => 2)
+        ],
+        [
+            'new' => array('start' => '20:00:00', 'end' => '21:00:00'),
+            'existing' => array('start' => '10:00:00', 'end' => '20:00:00', 'weekDay' => 2)
         ],
     );
 
     /**
      * @throws InvalidTimeConfigException
      */
-    public function testValidOverlapCreationOfRateHourConfigEntity(){
-        /**
-         * Invalid by Overlap, but allowed as no attached Days overlap
-         */
-        foreach ($this->invalidSame as $item) {
-
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end'], array(2));
-
-            $entry = ConfigService::createNewConfigRateHour(
-                $item['new']['start'],
-                $item['new']['end'],
-                140,
-                'P1',
-                array(1,3),
-                array($existing)
-            );
-
-            $this->assertInstanceOf(ConfigRateHours::class, $entry);
-        }
-    }
-
-    /**
-     * @throws InvalidTimeConfigException
-     */
-    public function testInvalidOverlapCreationOfRateHourConfigEntity(){
+    public function testInvalidOverlapCreationOfRateHourConfigEntity()
+    {
         /**
          * Invalid by Overlap
          */
         foreach ($this->invalidSame as $item) {
 
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end'], array(2,3));
-
-            $this->expectException(Exception::class);
-            $this->expectExceptionMessage('CONFIGSERVICE_OVERLAP_TIMES');
-            ConfigService::createNewConfigRateHour(
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
+            $this->expectException(InvalidTimeConfigException::class);
+            $this->expectExceptionMessage('CONFIG_OVERLAP_TIMES');
+            $cfr = ConfigService::createNewPrice(
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
                 'P1',
-                array(1,3),
+                'Regular Day',
+                1,
                 array($existing)
             );
         }
@@ -154,22 +151,24 @@ class ConfigServiceTest extends TestCase
     /**
      * @throws InvalidTimeConfigException
      */
-    public function testInvalidTimesCreationOfRateHourConfigEntity(){
+    public function testInvalidTimesCreationOfRateHourConfigEntity()
+    {
         /**
          * Invalid by End Time
          */
         foreach ($this->invalidEnd as $item) {
 
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end']);
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
 
             $this->expectException(Exception::class);
-            $this->expectExceptionMessage('CONFIGSERVICE_START_SMALLER_END');
-            ConfigService::createNewConfigRateHour(
+            $this->expectExceptionMessage('CONFIG_START_SMALLER_END');
+            ConfigService::createNewPrice(
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
                 'P1',
-                array(1,3),
+                'Regular Day',
+                1,
                 array($existing)
             );
         }
@@ -178,22 +177,76 @@ class ConfigServiceTest extends TestCase
     /**
      * @throws InvalidTimeConfigException
      */
-    public function testInvalidTimerangeCreationOfRateHourConfigEntity(){
+    public function testInvalidTimerangeCreationOfRateHourConfigEntity()
+    {
         /**
          * Invalid by End Time
          */
         foreach ($this->invalidHours as $item) {
 
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end']);
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
 
             $this->expectException(Exception::class);
-            $this->expectExceptionMessage('CONFIGSERVICE_INVALID_TIMES');
-            ConfigService::createNewConfigRateHour(
+            $this->expectExceptionMessage('CONFIG_INVALID_TIMES');
+            ConfigService::createNewPrice(
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
                 'P1',
-                array(1,3),
+                'Regular Day',
+                1,
+                array($existing)
+            );
+        }
+    }
+
+    /**
+     * @throws InvalidTimeConfigException
+     */
+    public function testInvalidOverlapsDayEntity()
+    {
+        /**
+         * Valid
+         */
+        foreach ($this->nonOverlappingDay as $item) {
+
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
+
+            $entry = ConfigService::createNewPrice(
+                $item['new']['start'],
+                $item['new']['end'],
+                140,
+                'P1',
+                'Regular Day',
+                1,
+                array($existing)
+            );
+
+            $this->assertInstanceOf(ConfigPrice::class, $entry);
+        }
+    }
+
+    /**
+     * @throws InvalidTimeConfigException
+     */
+    public function testValidOverlapsDayEntity()
+    {
+        /**
+         * Valid
+         */
+        foreach ($this->overlappingDay as $item) {
+
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
+
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('CONFIG_OVERLAP_TIMES');
+            ConfigService::createNewPrice(
+                $item['new']['start'],
+                $item['new']['end'],
+                140,
+                'P1',
+                'Regular Day',
+                1,
                 array($existing)
             );
         }
@@ -209,18 +262,19 @@ class ConfigServiceTest extends TestCase
          */
         foreach ($this->nonOverlapping as $item) {
 
-            $existing = self::_createRateHoursConfigEntity($item['existing']['start'], $item['existing']['end']);
+            $existing = self::_createConfigPriceEntity($item['existing']['start'], $item['existing']['end'], $item['existing']['weekDay']);
 
-            $entry = ConfigService::createNewConfigRateHour(
+            $entry = ConfigService::createNewPrice(
                 $item['new']['start'],
                 $item['new']['end'],
                 140,
                 'P1',
-                array(1,3),
+                'Regular Day',
+                1,
                 array($existing)
             );
 
-            $this->assertInstanceOf(ConfigRateHours::class, $entry);
+            $this->assertInstanceOf(ConfigPrice::class, $entry);
         }
     }
 
@@ -235,12 +289,12 @@ class ConfigServiceTest extends TestCase
          */
         foreach ($this->overlapping as $overlap) {
             $new = [
-                self::_createDTImmutableFromHourString($overlap['new']['start']),
-                self::_createDTImmutableFromHourString($overlap['new']['end']),
+                self::_createDTFromHourString($overlap['new']['start']),
+                self::_createDTFromHourString($overlap['new']['end']),
             ];
             $existing = [
-                self::_createDTImmutableFromHourString($overlap['existing']['start']),
-                self::_createDTImmutableFromHourString($overlap['existing']['end']),
+                self::_createDTFromHourString($overlap['existing']['start']),
+                self::_createDTFromHourString($overlap['existing']['end']),
             ];
             $this->assertTrue(ConfigService::checkOverlappingTimes($new, $existing));
         }
@@ -250,12 +304,12 @@ class ConfigServiceTest extends TestCase
          */
         foreach ($this->nonOverlapping as $nonOverlap) {
             $new = [
-                self::_createDTImmutableFromHourString($nonOverlap['new']['start']),
-                self::_createDTImmutableFromHourString($nonOverlap['new']['end']),
+                self::_createDTFromHourString($nonOverlap['new']['start']),
+                self::_createDTFromHourString($nonOverlap['new']['end']),
             ];
             $existing = [
-                self::_createDTImmutableFromHourString($nonOverlap['existing']['start']),
-                self::_createDTImmutableFromHourString($nonOverlap['existing']['end']),
+                self::_createDTFromHourString($nonOverlap['existing']['start']),
+                self::_createDTFromHourString($nonOverlap['existing']['end']),
             ];
             $this->assertFalse(ConfigService::checkOverlappingTimes($new, $existing));
         }
@@ -265,12 +319,12 @@ class ConfigServiceTest extends TestCase
          */
         foreach ($this->invalid as $invalid) {
             $new = [
-                self::_createDTImmutableFromHourString($invalid['new']['start']),
-                self::_createDTImmutableFromHourString($invalid['new']['end']),
+                self::_createDTFromHourString($invalid['new']['start']),
+                self::_createDTFromHourString($invalid['new']['end']),
             ];
             $existing = [
-                self::_createDTImmutableFromHourString($invalid['existing']['start']),
-                self::_createDTImmutableFromHourString($invalid['existing']['end']),
+                self::_createDTFromHourString($invalid['existing']['start']),
+                self::_createDTFromHourString($invalid['existing']['end']),
             ];
 
             $this->expectException(Exception::class);
@@ -278,24 +332,20 @@ class ConfigServiceTest extends TestCase
         }
     }
 
-    private function _createDTImmutableFromHourString(string $hour): DateTimeImmutable
+    private function _createDTFromHourString(string $hour): DateTime
     {
-        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hour . ':00');
+        return DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hour);
     }
 
-    private function _createRateHoursConfigEntity(string $hourFrom, string $hourTo, array $attachedWeekDays = array()): ConfigRateHours
+    private function _createConfigPriceEntity(string $hourFrom, string $hourTo, int $weekDay): ConfigPrice
     {
-        $from = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom . ':00');
-        $to = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
-        $entity = new ConfigRateHours();
-        $entity->setHourFrom($from);
-        $entity->setHourTo($to);
 
-        foreach($attachedWeekDays as $attachedWeekDay){
-            $wd = new ConfigWeekDays();
-            $wd->setDayOfWeek($attachedWeekDay);
-            $entity->addConfigWeekDay($wd);
-        }
+        $from = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom);
+        $to = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo);
+        $entity = new ConfigPrice();
+        $entity->setTimeFrom($from);
+        $entity->setTimeTo($to);
+        $entity->setWeekDay($weekDay);
 
         return $entity;
     }

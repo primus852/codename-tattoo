@@ -3,6 +3,7 @@
 namespace App\Dto\Config;
 
 use App\Entity\ConfigRateHours;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
@@ -24,7 +25,7 @@ final class ConfigRateHoursDto
     public string $category;
 
     #[Groups(['write', 'read'])]
-    public array $attachedWeekDays;
+    public array $weekDays = array();
 
     public function __construct(ConfigRateHours $configRateHours)
     {
@@ -39,12 +40,9 @@ final class ConfigRateHoursDto
         $this->priceNet = $configRateHours->getPriceNet();
         $this->category = $configRateHours->getCategory();
 
-        $this->attachedWeekDays = array();
-
-        foreach($configRateHours->getConfigWeekDays() as $configWeekDay){
-            $this->attachedWeekDays[] = new ConfigWeekDayDto($configWeekDay);
+        foreach ($configRateHours->getConfigWeekDays() as $configWeekDay){
+            $this->weekDays[] = $configWeekDay->getDayOfWeek();
         }
-
     }
 
 }
