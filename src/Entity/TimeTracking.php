@@ -7,10 +7,10 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\Dto\TimeTracking\TimeTrackingCreateDto;
-use App\Dto\TimeTracking\TimeTrackingCreateOverrideDto;
-use App\Dto\TimeTracking\TimeTrackingDto;
-use App\Dto\TimeTracking\TimeTrackingUpdateStatusDto;
+use App\Dto\TimeTracking\TimeTrackingCreateDTO;
+use App\Dto\TimeTracking\TimeTrackingCreateOverrideDTO;
+use App\Dto\TimeTracking\TimeTrackingDTO;
+use App\Dto\TimeTracking\TimeTrackingUpdateStatusDTO;
 use App\Enum\TimeTrackingStatus;
 use App\Mapping\EntityBase;
 use App\Repository\TimeTrackingRepository;
@@ -28,7 +28,7 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Time Tracking [Persistence]']
             ],
-            output: TimeTrackingDto::class,
+            output: TimeTrackingDTO::class,
         ),
         new GetCollection(
             uriTemplate: '/time-trackings',
@@ -43,8 +43,8 @@ use Symfony\Component\Uid\Uuid;
                 'description' => 'Creates a new TimeTracking. Provide userId to create "on behalf" (ROLE_ADMIN only)',
                 'tags' => ['Time Tracking [Persistence]']
             ],
-            input: TimeTrackingCreateDto::class,
-            output: TimeTrackingDto::class,
+            input: TimeTrackingCreateDTO::class,
+            output: TimeTrackingDTO::class,
         ),
         new Post(
             uriTemplate: '/process/time-tracking/override',
@@ -53,8 +53,8 @@ use Symfony\Component\Uid\Uuid;
                 'description' => 'Override a Time Tracking with a new Rate Hour Config or delete the Override',
                 'tags' => ['Time Tracking [Process]']
             ],
-            input: TimeTrackingCreateOverrideDto::class,
-            output: TimeTrackingDto::class,
+            input: TimeTrackingCreateOverrideDTO::class,
+            output: TimeTrackingDTO::class,
         ),
         new Post(
             uriTemplate: '/process/time-tracking/update-status',
@@ -63,8 +63,8 @@ use Symfony\Component\Uid\Uuid;
                 'description' => 'Update Status of a Time Tracking',
                 'tags' => ['Time Tracking [Process]']
             ],
-            input: TimeTrackingUpdateStatusDto::class,
-            output: TimeTrackingDto::class,
+            input: TimeTrackingUpdateStatusDTO::class,
+            output: TimeTrackingDTO::class,
         )
     ],
     formats: ["json"],
@@ -108,7 +108,7 @@ class TimeTracking extends EntityBase
     private ?Client $client = null;
 
     #[ORM\ManyToOne]
-    private ?ConfigRateHours $overrideRateHour = null;
+    private ?Price $overridePrice = null;
 
     public function getId(): ?Uuid
     {
@@ -187,14 +187,14 @@ class TimeTracking extends EntityBase
         return $this;
     }
 
-    public function getOverrideRateHour(): ?ConfigRateHours
+    public function getOverridePrice(): ?Price
     {
-        return $this->overrideRateHour;
+        return $this->overridePrice;
     }
 
-    public function setOverrideRateHour(?ConfigRateHours $overrideRateHour): self
+    public function setOverridePrice(?Price $overridePrice): self
     {
-        $this->overrideRateHour = $overrideRateHour;
+        $this->overridePrice = $overridePrice;
 
         return $this;
     }

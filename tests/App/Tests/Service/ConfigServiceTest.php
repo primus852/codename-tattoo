@@ -2,7 +2,7 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\ConfigPrice;
+use App\Entity\Price;
 use App\Entity\ConfigRateHours;
 use App\Entity\ConfigWeekDays;
 use App\Exception\InvalidTimeConfigException;
@@ -222,7 +222,7 @@ class ConfigServiceTest extends TestCase
                 array($existing)
             );
 
-            $this->assertInstanceOf(ConfigPrice::class, $entry);
+            $this->assertInstanceOf(Price::class, $entry);
         }
     }
 
@@ -274,7 +274,7 @@ class ConfigServiceTest extends TestCase
                 array($existing)
             );
 
-            $this->assertInstanceOf(ConfigPrice::class, $entry);
+            $this->assertInstanceOf(Price::class, $entry);
         }
     }
 
@@ -337,12 +337,12 @@ class ConfigServiceTest extends TestCase
         return DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hour);
     }
 
-    private function _createConfigPriceEntity(string $hourFrom, string $hourTo, int $weekDay): ConfigPrice
+    private function _createConfigPriceEntity(string $hourFrom, string $hourTo, int $weekDay): Price
     {
 
         $from = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom);
         $to = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo);
-        $entity = new ConfigPrice();
+        $entity = new Price();
         $entity->setTimeFrom($from);
         $entity->setTimeTo($to);
         $entity->setWeekDay($weekDay);

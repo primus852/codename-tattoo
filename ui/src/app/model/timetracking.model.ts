@@ -1,13 +1,14 @@
 import {Uuid} from "./uuid.model";
-import {UserModelMinimal} from "./user.model";
+import {UserShort} from "./user.model";
 import {ClientModelMinimal} from "./client.model";
-import {ConfiguredRateHour} from "./config.backend.model";
+import {ConfiguredPrice} from "./config.backend.model";
 
 /**
  * All TimeTrackings
  */
 export interface TimeTrackingAllResponseDTO {
   timeTrackings: Array<TimeTrackingDetail>;
+  configuredPrices: Array<ConfiguredPrice>;
 }
 
 export interface TimeTrackingDetail {
@@ -16,16 +17,16 @@ export interface TimeTrackingDetail {
   dateEnd: Date;
   description: string;
   status: TimeTrackingStatus;
-  user: UserModelMinimal;
+  user: UserShort;
   client: ClientModelMinimal;
   minutesPerSlot: MinutesPerSlot;
-  overrideToRateHourId?: Uuid;
-  configuredRateHours: Array<ConfiguredRateHour>;
+  overrideToPriceId?: Uuid;
 }
 
 export interface MinutesPerSlot {
   slots: Array<TimeTrackingSlot>;
   unallocated: number;
+  categories: Array<string>;
   total: MinutesTotalSlot;
 }
 

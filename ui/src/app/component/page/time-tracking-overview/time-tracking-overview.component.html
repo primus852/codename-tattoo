@@ -7,7 +7,58 @@
     ></app-hy-breadcrumb>
   </div>
   <div class="flex-auto pl-5">
-    &nbsp;
+    <div class="flex flex-col gap-y-5">
+      <div class="card p-3 mb-2">
+        <div class="grid lg:grid-cols-9 gap-x-2">
+          <div class="col-span-1">
+            <label class="label block" for="input">Kunde</label>
+            <input id="input" class="form-control" placeholder="INT00001">
+          </div>
+          <div class="col-span-1">
+            <label class="label block" for="input">Von</label>
+            <input id="inputDate" class="form-control" placeholder="">
+          </div>
+          <div class="col-span-1">
+            <label class="label block" for="input">Bis</label>
+            <input id="inputDate2" class="form-control" placeholder="">
+          </div>
+          <div class="col-span-3">
+            <label class="label block" for="input">Tätigkeit</label>
+            <input id="inputJob" class="form-control" placeholder="Rechnungstext">
+          </div>
+          <div class="col-span-1">
+            <label class="label block" for="input">Mitarbeiter</label>
+            <div class="custom-select">
+              <select class="form-control">
+                <option [selected]="loggedUser?.code === user.code" value="{{user.id}}"
+                        *ngFor="let user of users">{{user.code}}</option>
+              </select>
+              <div class="custom-select-icon la la-caret-down"></div>
+            </div>
+          </div>
+          <div class="col-span-1">
+            <label class="label block" for="input">Überschreiben</label>
+            <button
+              *ngFor="let category of categories"
+              [class.btn-icon_small]="categories.length > 6"
+              [class.btn-icon_medium]="categories.length <= 6"
+              [class.btn_outlined]="overwriteSelected !== category"
+              (click)="selectOverwriteCategory(category)"
+              class="btn btn-icon btn_primary uppercase text-xs mr-1 mt-0.5"
+            >
+              {{category}}
+            </button>
+          </div>
+          <div class="col-span-1">
+            <label class="label block">&nbsp;</label>
+            <button class="btn btn_outlined btn_primary w-full">
+              <span class="mx-auto">Speichern</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -54,12 +105,18 @@
         <td>{{tt.minutesPerSlot.total.minutes | minutesToHours}}</td>
         <td>
           <ng-container *ngFor="let category of categories">
-            <div class="avatar rateCategory mx-0.5" *ngIf="">
+            <button
+              [class.btn-icon_small]="categories.length > 6"
+              [class.btn-icon_medium]="categories.length <= 6"
+              [class.not-available]="!(tt.minutesPerSlot.categories.indexOf(category) > -1)"
+              class="btn btn-icon btn_primary btn_outlined uppercase text-xs mr-1 mt-0.5"
+              (click)="overwriteTimetrackingPrice(category, tt.id)"
+            >
               {{category}}
-            </div>
+            </button>
           </ng-container>
         </td>
-        <td>{{tt.minutesPerSlot.total.priceNet | currency:'EUR':'symbol':'3.2-2':'de'}}</td>
+        <td>{{tt.minutesPerSlot.total.priceNet | currency:'EUR':'symbol':'2.2-2':'de'}}</td>
         <td>{{tt.description}}</td>
         <td>{{tt.status}}</td>
         <td>{{tt.user.code}}</td>

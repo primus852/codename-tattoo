@@ -2,17 +2,25 @@
 
 namespace App\Service;
 
-use App\Entity\ConfigPrice;
+use App\Entity\Price;
 use App\Entity\ConfigRateHours;
 use App\Exception\InvalidTimeConfigException;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
+use Exception;
 
 class ConfigService
 {
 
-    public static function getRateHoursBetweenDates(DateTimeImmutable $from, DateTimeImmutable $to, array $configuredHours): array
+    /**
+     * @param DateTimeImmutable $from
+     * @param DateTimeImmutable $to
+     * @param Price[] $configuredPrices
+     * @return array
+     */
+    public static function getRateHoursBetweenDates(DateTimeImmutable $from, DateTimeImmutable $to, array $configuredPrices): array
     {
 
         /**
@@ -23,7 +31,11 @@ class ConfigService
 
         $minutes_array = [];
         for ($i = 0; $i < $minutes; $i++) {
-            $minutes_array[] = $from->add(new \DateInterval("PT{$i}M"));
+            $tmpDate = DateTime::createFromImmutable(($from->add(new DateInterval("PT{$i}M"))));
+            $minutes_array[] = array(
+                'minutes' => $from->add(new DateInterval("PT{$i}M")),
+                'weekday' => intval($tmpDate->format('N')),
+            );
         }
 
         /**
@@ -33,30 +45,32 @@ class ConfigService
         $unallocated = 0;
         $totalMinutes = 0;
         $totalPriceNet = 0;
-        foreach ($minutes_array as $min) {
+        $usedCategories = [];
+        foreach ($minutes_array as $values) {
             $found = false;
-            foreach ($configuredHours as $hour) {
-                $minuteIsInRateHour = self::_checkBetweenRateHours($hour->getHourFrom(), $hour->getHourTo(), $min);
+            foreach ($configuredPrices as $hour) {
+                $minuteIsInRateHour = self::_checkBetweenRateHours($hour->getTimeFrom(), $hour->getTimeTo(), $values['minutes']);
 
-                if ($minuteIsInRateHour) {
+                if ($minuteIsInRateHour && $values['weekday'] === $hour->getWeekDay()) {
                     $found = true;
 
-                    $id = (string)$hour->getId();
+                    $priceIdByCat = $hour->getCategory();
 
                     /**
                      * TODO: Possibly sort by startDate
                      */
-                    if (!array_key_exists($id, $slots)) {
-                        $slots[$id] = array(
-                            'id' => $id,
+                    if (!array_key_exists($priceIdByCat, $slots)) {
+                        $usedCategories[] = $hour->getCategory();
+                        $slots[$priceIdByCat] = array(
+                            'id' => (string)$hour->getId(),
                             'minutes' => 0,
                             'category' => $hour->getCategory(),
                             'priceNet' => $hour->getPriceNet(),
                             'priceNetTotal' => 0,
                         );
                     }
-                    $slots[$id]['minutes']++;
-                    $slots[$id]['priceNetTotal'] = $slots[$id]['priceNet'] / 60 * $slots[$id]['minutes'];
+                    $slots[$priceIdByCat]['minutes']++;
+                    $slots[$priceIdByCat]['priceNetTotal'] = $slots[$priceIdByCat]['priceNet'] / 60 * $slots[$priceIdByCat]['minutes'];
                 }
             }
             if (!$found) {
@@ -64,6 +78,9 @@ class ConfigService
             }
         }
 
+
+        ksort($slots);
+        sort($usedCategories);
         $slotArray = [];
 
         foreach ($slots as $slot) {
@@ -75,6 +92,7 @@ class ConfigService
         return array(
             'slots' => $slotArray,
             'unallocated' => $unallocated,
+            'categories' => $usedCategories,
             'total' => array(
                 'minutes' => $totalMinutes,
                 'priceNet' => $totalPriceNet,
@@ -100,7 +118,7 @@ class ConfigService
             throw new InvalidTimeConfigException('CONFIG_INVALID_TIMES');
         }
 
-        if ($new_end <= $new_start) {
+        if (!self::_isSmallerStart($new_start, $new_end)) {
             throw new InvalidTimeConfigException('CONFIG_START_SMALLER_END');
         }
 
@@ -115,12 +133,38 @@ class ConfigService
      * @param DateTime $timeEnd
      * @return bool
      */
+    private static function _isSmallerStart(DateTime $timeStart, DateTime $timeEnd): bool
+    {
+        $endCheck = clone $timeEnd;
+
+        if ($timeEnd->format('H:i:s') === '23:59:59') {
+            $oneSecond = new DateInterval('PT1S');
+            $oneDay = new DateInterval('P1D');
+            $endCheck->add($oneSecond);
+            $endCheck->add($oneDay);
+        }
+
+        if ($endCheck <= $timeStart) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param DateTime $timeStart
+     * @param DateTime $timeEnd
+     * @return bool
+     */
     private static function _isValidTimeRange(DateTime $timeStart, DateTime $timeEnd): bool
     {
-        $oneSecond = new DateInterval('PT1S');
 
         $end = clone $timeEnd;
-        $end->sub($oneSecond);
+
+        if ($timeEnd->format('H:i:s') === '23:59:59') {
+            $oneSecond = new DateInterval('PT1S');
+            $end->add($oneSecond);
+        }
 
         if ($timeStart->format('Y-m-d') !== $end->format('Y-m-d')) {
             return false;
@@ -135,8 +179,8 @@ class ConfigService
      * @param string $category
      * @param string $name
      * @param int $weekDay
-     * @param ConfigPrice[] $existing
-     * @return ConfigPrice
+     * @param Price[] $existing
+     * @return Price
      * @throws InvalidTimeConfigException
      */
     public static function createNewPrice(
@@ -147,13 +191,13 @@ class ConfigService
         string $name,
         int    $weekDay,
         array  $existing
-    ): ConfigPrice
+    ): Price
     {
 
         try {
             $from = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $timeFrom);
             $to = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $timeTo);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidTimeConfigException('CONFIG_INVALID_TIMES');
         }
 
@@ -177,7 +221,7 @@ class ConfigService
             throw new InvalidTimeConfigException('CONFIG_OVERLAP_TIMES');
         }
 
-        $price = new ConfigPrice();
+        $price = new Price();
         $price->setPriceNet($priceNet);
         $price->setName($name);
         $price->setCategory($category);
@@ -205,7 +249,7 @@ class ConfigService
         try {
             $from = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourFrom . ':00');
             $toMutable = DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 ' . $hourTo . ':00');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidTimeConfigException('CONFIGSERVICE_INVALID_TIMES');
         }
 
@@ -247,12 +291,12 @@ class ConfigService
 
     /**
      * Check if a given minute is in between DateRange, regardless of Date
-     * @param DateTimeImmutable $from
-     * @param DateTimeImmutable $to
-     * @param DateTimeImmutable $toCheck
+     * @param DateTimeInterface $from
+     * @param DateTimeInterface $to
+     * @param DateTimeInterface $toCheck
      * @return bool
      */
-    private static function _checkBetweenRateHours(DateTimeImmutable $from, DateTimeImmutable $to, DateTimeImmutable $toCheck): bool
+    private static function _checkBetweenRateHours(DateTimeInterface $from, DateTimeInterface $to, DateTimeInterface $toCheck): bool
     {
         $startTime = $from->format("H:i:s");
         $endTime = $to->format("H:i:s");

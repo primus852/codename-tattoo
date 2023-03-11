@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Dto\User\UserCreateDto;
 use App\Repository\UserRepository;
 use App\State\User\UserProcessor;
+use App\State\User\UserShortCollectionProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,7 +24,7 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Post(
-            uriTemplate: '/user',
+            uriTemplate: '/admin/user',
             openapiContext: [
                 'tags' => ['Users [Admin]']
             ],
@@ -38,12 +40,18 @@ use Symfony\Component\Uid\Uuid;
         new Get(
             uriTemplate: '/user/{id}',
             openapiContext: [
-                'tags' => ['Users [Admin]']
+                'tags' => ['Users [Persistence]']
             ],
+        ),
+        new GetCollection(
+            uriTemplate: '/users/short',
+            openapiContext: [
+                'tags' => ['Users [Persistence]']
+            ],
+            provider: UserShortCollectionProvider::class
         ),
     ],
     formats: ["json"],
-    routePrefix: '/admin',
 
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

@@ -5,8 +5,9 @@ namespace App\State\TimeTracking;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
-use App\Dto\TimeTracking\TimeTrackingDto;
+use App\Dto\TimeTracking\TimeTrackingDTO;
 use App\Entity\Client;
+use App\Entity\Price;
 use App\Entity\ConfigRateHours;
 use App\Entity\TimeTracking;
 use App\Entity\User;
@@ -16,6 +17,7 @@ use App\Exception\ConfigBlankException;
 use App\Exception\ConfigNotFoundException;
 use App\Exception\InvalidRoleException;
 use App\Exception\NotLoggedInException;
+use App\Exception\PriceNotFoundException;
 use App\Exception\TimeTrackingNotFoundException;
 use App\Exception\UserNotFoundException;
 use App\Service\ConfigService;
@@ -40,7 +42,7 @@ class TimeTrackingProcessor implements ProcessorInterface
      * @param Operation $operation
      * @param array $uriVariables
      * @param array $context
-     * @return TimeTrackingDto
+     * @return TimeTrackingDTO
      * @throws ClientNotFoundException
      * @throws ConfigBlankException
      * @throws ConfigNotFoundException
@@ -49,33 +51,33 @@ class TimeTrackingProcessor implements ProcessorInterface
      * @throws TimeTrackingNotFoundException
      * @throws UserNotFoundException
      */
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TimeTrackingDto
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TimeTrackingDTO
     {
 
-        $repo = $this->entityManager->getRepository(ConfigRateHours::class);
+        $repo = $this->entityManager->getRepository(Price::class);
         $configuredRateHours = $repo->findAll();
 
         if ($operation instanceof Post) {
             if ($context['operation']->getUriTemplate() === '/time-tracking') {
                 $timeTracking = $this->_createAndSaveTimeTracking($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
+                return new TimeTrackingDTO($timeTracking, $slots);
             }
 
             if ($context['operation']->getUriTemplate() === '/process/time-tracking/override') {
                 $timeTracking = $this->_overrideOrResetTimeTracking($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
+                return new TimeTrackingDTO($timeTracking, $slots);
             }
 
             if ($context['operation']->getUriTemplate() === '/process/time-tracking/update-status') {
                 $timeTracking = $this->_updateTimeTrackingStatus($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDto($timeTracking, $slots, $configuredRateHours);
+                return new TimeTrackingDTO($timeTracking, $slots);
             }
         }
         $slots = ConfigService::getRateHoursBetweenDates($data->hourFrom, $data->hourTo, $configuredRateHours);
-        return new TimeTrackingDto($data, $slots, $configuredRateHours);
+        return new TimeTrackingDTO($data, $slots);
     }
 
     /**
@@ -140,15 +142,15 @@ class TimeTrackingProcessor implements ProcessorInterface
             $timeTracking->setOverrideRateHour(null);
         } else {
 
-            if (!isset($data->overrideToRateHourId)) {
-                throw new ConfigBlankException('CONFIG_RATEHOUR_BLANK');
+            if (!isset($data->overrideToPriceId)) {
+                throw new ConfigBlankException('PRICE_BLANK');
             }
 
-            $repoRateHour = $this->entityManager->getRepository(ConfigRateHours::class);
+            $repoRateHour = $this->entityManager->getRepository(Price::class);
             $configRateHour = $repoRateHour->find($data->overrideToRateHourId);
 
             if ($configRateHour === null) {
-                throw new ConfigNotFoundException('RATEHOUR_NOT_FOUND');
+                throw new PriceNotFoundException('PRICE_NOT_FOUND');
             }
             $timeTracking->setOverrideRateHour($configRateHour);
         }

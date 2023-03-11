@@ -20,7 +20,7 @@ export class AuthService {
     private _requestService: RequestService,
     private _jwtHelper: JwtHelperService
   ) {
-    this.loginSubject.next(this.isLoggedIn());
+    this.loginSubject.next(this.loggedInUser());
   }
 
   public login(email: string, password: string): Promise<JWTResponseDTO> {
@@ -44,7 +44,7 @@ export class AuthService {
     const decodedToken = this._decodedToken(token);
     localStorage.setItem('id_token', token);
     localStorage.setItem('expires_at', JSON.stringify(decodedToken.exp));
-    this.loginSubject.next(this.isLoggedIn());
+    this.loginSubject.next(this.loggedInUser());
   }
 
   public logout() {
@@ -56,7 +56,7 @@ export class AuthService {
      */
   }
 
-  public isLoggedIn(): AuthUser | null {
+  public loggedInUser(): AuthUser | null {
     const token = localStorage.getItem('id_token');
     if (token) {
       const decodedToken = this._decodedToken(token);
