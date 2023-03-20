@@ -8,7 +8,6 @@ use ApiPlatform\State\ProcessorInterface;
 use App\Dto\TimeTracking\TimeTrackingDTO;
 use App\Entity\Client;
 use App\Entity\Price;
-use App\Entity\ConfigRateHours;
 use App\Entity\TimeTracking;
 use App\Entity\User;
 use App\Enum\TimeTrackingStatus;
@@ -21,6 +20,7 @@ use App\Exception\PriceNotFoundException;
 use App\Exception\TimeTrackingNotFoundException;
 use App\Exception\UserNotFoundException;
 use App\Service\ConfigService;
+use App\Service\PublishService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Uid\Uuid;
@@ -28,13 +28,12 @@ use Symfony\Component\Uid\Uuid;
 class TimeTrackingProcessor implements ProcessorInterface
 {
 
-    private EntityManagerInterface $entityManager;
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TokenStorageInterface  $tokenStorage,
+        private readonly PublishService         $publishService
+    )
     {
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -61,7 +60,11 @@ class TimeTrackingProcessor implements ProcessorInterface
             if ($context['operation']->getUriTemplate() === '/time-tracking') {
                 $timeTracking = $this->_createAndSaveTimeTracking($data);
                 $slots = ConfigService::getRateHoursBetweenDates($timeTracking->getServiceStart(), $timeTracking->getServiceEnd(), $configuredRateHours);
-                return new TimeTrackingDTO($timeTracking, $slots);
+                $tt = new TimeTrackingDTO($timeTracking, $slots);
+
+                $this->publishService->newTimeTrackingAdded($tt);
+
+                return $tt;
             }
 
             if ($context['operation']->getUriTemplate() === '/process/time-tracking/override') {

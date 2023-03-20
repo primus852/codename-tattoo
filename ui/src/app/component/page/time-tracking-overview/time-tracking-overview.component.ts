@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TimeTrackingApiService} from "../../../service/api/time-tracking-api.service";
 import {TimeTrackingDetail} from "../../../model/timetracking.model";
 import {ConfiguredPrice} from "../../../model/config.backend.model";
@@ -7,6 +7,9 @@ import {UserShort} from "../../../model/user.model";
 import {AuthService} from "../../../service/auth/auth.service";
 import {AuthUser} from "../../../model/auth.model";
 import {Uuid} from "../../../model/uuid.model";
+import {SseService} from "../../../service/sse/sse.service";
+import {Subscription} from "rxjs";
+import {HyUtilsService} from "../../../service/hy-utils/hy-utils.service";
 
 @Component({
   selector: 'app-time-tracking-overview',
@@ -14,18 +17,20 @@ import {Uuid} from "../../../model/uuid.model";
   styleUrls: ['./time-tracking-overview.component.scss']
 })
 // TODO: CONTINUE HERE IN THE LIST WITH THE HOURS OVERVIEW
-export class TimeTrackingOverviewComponent implements OnInit {
+export class TimeTrackingOverviewComponent implements OnInit, OnDestroy {
 
   public timeTrackings: Array<TimeTrackingDetail> = [];
   public users: Array<UserShort> = [];
   public loggedUser: AuthUser | null = null;
   public overwriteSelected: string | null = null;
   public categories: Array<string> = [];
+  private _sseSubscription: Subscription | null = null;
 
   constructor(
     private _timeTrackingApi: TimeTrackingApiService,
     private _userApi: UserApiService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _sseService: SseService
   ) {
   }
 
@@ -44,6 +49,19 @@ export class TimeTrackingOverviewComponent implements OnInit {
       this.users = users.users;
     });
 
+    /**
+     * Subscribe to TimeTracking Events
+     */
+    this._sseSubscription = this._sseService.getServerSentEvent<TimeTrackingDetail>('/topics/time-tracking/new').subscribe((data) => {
+      this.timeTrackings = [data].concat(this.timeTrackings);
+    });
+
+  }
+
+  public ngOnDestroy() {
+    if (this._sseSubscription) {
+      this._sseSubscription.unsubscribe();
+    }
   }
 
   private _consolidate_categories(configuredHours: Array<ConfiguredPrice>) {

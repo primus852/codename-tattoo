@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Price;
-use App\Entity\ConfigRateHours;
 use App\Exception\InvalidTimeConfigException;
 use DateInterval;
 use DateTime;

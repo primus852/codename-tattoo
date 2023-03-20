@@ -10,7 +10,7 @@ use App\Enum\TimeTrackingStatus;
 use Symfony\Component\Uid\Uuid;
 
 
-final class TimeTrackingDTO
+final class TimeTrackingDTO implements \JsonSerializable
 {
     public Uuid $id;
     public \DateTimeImmutable $dateStart;
@@ -44,6 +44,21 @@ final class TimeTrackingDTO
         $this->client = $clientShort;
         $this->minutesPerSlot = $slots;
         $this->overrideToRateHourId = $timeTracking->getOverridePrice()?->getId();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'dateStart' => $this->dateStart->format(\DateTimeInterface::ATOM),
+            'dateEnd' => $this->dateEnd->format(\DateTimeInterface::ATOM),
+            'description' => $this->description,
+            'status' => $this->status,
+            'user' => $this->user,
+            'client' => $this->client,
+            'minutesPerSlot' => $this->minutesPerSlot,
+            'overrideToRateHourId' => $this->overrideToRateHourId
+        ];
     }
 
 
