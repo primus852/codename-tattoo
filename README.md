@@ -3,6 +3,7 @@
 - add Pagination
 - Add new TimeTracking from Frontend
 - Sorting in Frontend
+- Protecting Message Endpoints?
 
 # Symfony Docker
 
