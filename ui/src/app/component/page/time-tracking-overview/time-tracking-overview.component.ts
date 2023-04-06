@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TimeTrackingApiService} from "../../../service/api/time-tracking-api.service";
-import {TimeTrackingDetail} from "../../../model/timetracking.model";
+import {TimeTrackingCreateDTO, TimeTrackingDetail} from "../../../model/timetracking.model";
 import {ConfiguredPrice} from "../../../model/config.backend.model";
 import {UserApiService} from "../../../service/api/user-api.service";
 import {UserShort} from "../../../model/user.model";
@@ -9,7 +9,8 @@ import {AuthUser} from "../../../model/auth.model";
 import {Uuid} from "../../../model/uuid.model";
 import {SseService} from "../../../service/sse/sse.service";
 import {Subscription} from "rxjs";
-import {HyUtilsService} from "../../../service/hy-utils/hy-utils.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {HyToastService} from "../../../service/hy-toast/hy-toast.service";
 
 @Component({
   selector: 'app-time-tracking-overview',
@@ -20,18 +21,29 @@ import {HyUtilsService} from "../../../service/hy-utils/hy-utils.service";
 export class TimeTrackingOverviewComponent implements OnInit, OnDestroy {
 
   public timeTrackings: Array<TimeTrackingDetail> = [];
+  public formTimeTracking: FormGroup;
   public users: Array<UserShort> = [];
   public loggedUser: AuthUser | null = null;
   public overwriteSelected: string | null = null;
   public categories: Array<string> = [];
+  public isLoading: boolean = false;
   private _sseSubscription: Subscription | null = null;
 
   constructor(
     private _timeTrackingApi: TimeTrackingApiService,
     private _userApi: UserApiService,
     private _authService: AuthService,
-    private _sseService: SseService
+    private _sseService: SseService,
+    private _hyToast: HyToastService,
+    private _fb: FormBuilder,
   ) {
+    this.formTimeTracking = this._fb.group({
+      client: ['018619d0-258a-742c-978c-38d48f855ea8', Validators.required],
+      from: ['2023-03-10T08:15:00.000Z', Validators.required],
+      to: ['2023-03-10T08:55:00.000Z', Validators.required],
+      description: ['Test from FE', Validators.required],
+      employeeOverride: [''],
+    })
   }
 
   ngOnInit() {
@@ -85,5 +97,37 @@ export class TimeTrackingOverviewComponent implements OnInit, OnDestroy {
 
   public overwriteTimetrackingPrice(category: string, timeTrackingId: Uuid) {
     alert(category + ' overwritten (ID needed) for TT ' + timeTrackingId);
+  }
+
+  public addTimeTracking() {
+    const val = this.formTimeTracking.value;
+
+    const timeTrackingEntry: TimeTrackingCreateDTO = {
+      clientId: val.client,
+      dateEnd: val.to,
+      dateStart: val.from,
+      description: val.description
+    }
+
+    if (this.formTimeTracking.valid) {
+
+      this.isLoading = true;
+      this._timeTrackingApi.create(timeTrackingEntry).then(() => {
+        this._hyToast.showToast('Success', 'Created new TimeTracking', {
+          autoClose: true,
+        });
+      }).finally(() => {
+        this.isLoading = false;
+      }).catch(() => {
+        this._hyToast.showToast('Error', 'Could create TimeTracking', {
+          autoClose: true,
+        });
+      });
+    }else{
+      this._hyToast.showToast('Error', 'TT Error', {
+        autoClose: true,
+      });
+      console.log(timeTrackingEntry);
+    }
   }
 }

@@ -26,7 +26,7 @@ const hexToRGB = (h) => {
 
 // With Opacity Value
 const withOpacityValue = (variable) => {
-  return ({ opacityValue }) => {
+  return ({opacityValue}) => {
     if (opacityValue === undefined) {
       return `rgb(var(${variable}))`;
     }
@@ -35,7 +35,10 @@ const withOpacityValue = (variable) => {
 };
 
 module.exports = {
-  content: ["src/**/*.{html,js}"],
+  content: [
+    "src/**/*.{html,js}",
+    "./node_modules/tw-elements/dist/js/**/*.js"
+  ],
   darkMode: "class",
   theme: {
     container: {
@@ -409,5 +412,8 @@ module.exports = {
       },
     },
   },
-  plugins: [aspectRatio],
+  plugins: [
+    aspectRatio,
+    require("tw-elements/dist/plugin")
+  ],
 };

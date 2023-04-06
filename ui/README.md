@@ -2,7 +2,12 @@
 ~~- Enrich Token with Full Name~~
 ~~- Continue left Menu~~ (good enough)
 - Continue Top Menu Toggles
-- Start Stundenzettel FE
+~~- Start Stundenzettel FE~~
+- Datepicker Frontend TimeTracking
+- add Pagination
+~~- Add new TimeTracking from Frontend~~
+- Sorting in Frontend
+- Protecting Message Endpoints?
 
 # Ui
 

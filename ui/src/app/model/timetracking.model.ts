@@ -23,6 +23,14 @@ export interface TimeTrackingDetail {
   overrideToPriceId?: Uuid;
 }
 
+export interface TimeTrackingCreateDTO {
+  dateStart: Date;
+  dateEnd: Date;
+  description: string;
+  clientId: Uuid;
+  overwrite?: string | null;
+}
+
 export interface MinutesPerSlot {
   slots: Array<TimeTrackingSlot>;
   unallocated: number;

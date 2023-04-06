@@ -29,6 +29,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    const importTE = async () => {
+      // @ts-ignore
+      await import('tw-elements');
+    };
+    importTE();
+
     this._authSubscription = this._auth.loginState.subscribe((state) => {
       this.isLoggedIn = state !== null;
     });

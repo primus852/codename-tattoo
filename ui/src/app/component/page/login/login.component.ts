@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit{
           autoClose: true,
         });
         this._authService.logout();
-      })
+      });
     }
   }
 
