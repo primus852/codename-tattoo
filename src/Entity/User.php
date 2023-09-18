@@ -51,7 +51,7 @@ use Symfony\Component\Uid\Uuid;
             provider: UserShortCollectionProvider::class
         ),
     ],
-    formats: ["json"],
+    formats: ["jsonld"],
 
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -60,34 +60,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['read'])]
+    #[Groups(['readonly'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['user_extended', 'user_create'])]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['write', 'read'])]
+    #[Groups(['user_extended', 'user_create'])]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['write'])]
+    #[Groups(['user_create'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'serviceUser', targetEntity: TimeTracking::class)]
-    #[Groups(['write'])]
+    #[Groups(['user_extended'])]
     private Collection $timeTrackings;
 
     #[ORM\Column(length: 15, unique: true, nullable: false)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['user', 'user_extended', 'user_create'])]
     private ?string $code = null;
 
     #[ORM\Column(length: 255, nullable: false)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['user', 'user_extended', 'user_create'])]
     private ?string $name = null;
 
     public function __construct()

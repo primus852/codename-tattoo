@@ -8,25 +8,25 @@ use Symfony\Component\Uid\Uuid;
 
 class PriceDTO
 {
-    #[Groups(['read'])]
+    #[Groups(['readonly'])]
     public Uuid $id;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $timeFrom;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $timeTo;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public float $priceNet;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $category;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $name;
 
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public int $weekDay;
 
     public function __construct(Price $configPrice)

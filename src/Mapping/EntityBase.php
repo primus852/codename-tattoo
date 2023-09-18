@@ -4,6 +4,7 @@ namespace App\Mapping;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\HasLifecycleCallbacks
@@ -11,9 +12,11 @@ use DateTimeImmutable;
 class EntityBase implements EntityBaseInterface
 {
     #[ORM\Column(nullable: false)]
+    #[Groups(['readonly'])]
     protected DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: false)]
+    #[Groups(['readonly'])]
     protected DateTimeImmutable $updatedAt;
 
     #[ORM\PrePersist]

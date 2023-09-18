@@ -25,7 +25,7 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Client [Persistence]']
             ],
             normalizationContext: [
-                'groups' => 'read'
+                'groups' => ['collection']
             ],
             denormalizationContext: [
                 'groups' => 'write'
@@ -35,22 +35,28 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Client [Persistence]']
             ],
+            normalizationContext: [
+                'groups' => ['readonly', 'timeTracking', 'user', 'price']
+            ],
+            denormalizationContext: [
+                'groups' => 'client'
+            ],
         ),
         new Post(
             openapiContext: [
                 'tags' => ['Client [Persistence]']
             ],
             normalizationContext: [
-                'groups' => 'read'
+                'groups' => 'readonly'
             ],
             denormalizationContext: [
-                'groups' => 'write'
+                'groups' => 'client'
             ],
             input: ClientCreateDto::class,
             processor: ClientProcessor::class
         )
     ],
-    formats: ["json"],
+    formats: ["jsonld"]
 
 )]
 #[ORM\HasLifecycleCallbacks]
@@ -60,22 +66,23 @@ class Client extends EntityBase
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['read'])]
+    #[Groups(['readonly'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['client'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['client'])]
     private ?string $nameShort = null;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: TimeTracking::class, orphanRemoval: true)]
-    #[Groups(['write', 'read'])]
+    #[Groups(['readonly', 'timeTracking'])]
     private Collection $timeTrackings;
 
     #[ORM\Column(length: 15, nullable: false)]
+    #[Groups(['client'])]
     private ?string $clientNumber = null;
 
     public function __construct()

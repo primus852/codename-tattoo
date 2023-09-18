@@ -1,6 +1,6 @@
 import {Uuid} from "./uuid.model";
 import {UserShort} from "./user.model";
-import {ClientModelMinimal} from "./client.model";
+import {ClientModelMinimalDEPRECATED} from "./client.model";
 import {ConfiguredPrice} from "./config.backend.model";
 
 /**
@@ -18,7 +18,7 @@ export interface TimeTrackingDetail {
   description: string;
   status: TimeTrackingStatus;
   user: UserShort;
-  client: ClientModelMinimal;
+  client: ClientModelMinimalDEPRECATED;
   minutesPerSlot: MinutesPerSlot;
   overrideToPriceId?: Uuid;
 }

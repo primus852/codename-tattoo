@@ -38,6 +38,12 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Prices [Persistence]']
             ],
+            normalizationContext: [
+                'groups' => ['readonly', 'price']
+            ],
+            denormalizationContext: [
+                'groups' => 'price'
+            ],
             provider: PriceProvider::class,
         ),
         new Post(
@@ -46,10 +52,10 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Prices [Persistence]']
             ],
             normalizationContext: [
-                'groups' => 'read'
+                'groups' => ['readonly', 'price']
             ],
             denormalizationContext: [
-                'groups' => 'write'
+                'groups' => 'price'
             ],
             input: PriceCreateDTO::class,
             output: PriceDTO::class,
@@ -63,17 +69,17 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Prices [Process]']
             ],
             normalizationContext: [
-                'groups' => 'read'
+                'groups' => ['readonly', 'price']
             ],
             denormalizationContext: [
-                'groups' => 'write'
+                'groups' => 'price'
             ],
             input: PriceInRangeRequestDTO::class,
             output: PriceInRangeResponseDTO::class,
             processor: PriceInRangeProcessor::class
         ),
     ],
-    formats: ["json"]
+    formats: ["jsonld"]
 )]
 #[ORM\HasLifecycleCallbacks]
 class Price extends EntityBase
@@ -82,22 +88,27 @@ class Price extends EntityBase
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['read'])]
+    #[Groups(['readonly'])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
+    #[Groups(['price'])]
     private ?float $priceNet = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['price'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups(['price'])]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[Groups(['price'])]
     private ?\DateTimeInterface $timeFrom = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[Groups(['price'])]
     private ?\DateTimeInterface $timeTo = null;
 
     #[ORM\Column]

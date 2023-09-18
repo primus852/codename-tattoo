@@ -18,6 +18,7 @@ use App\State\TimeTracking\TimeTrackingProcessor;
 use App\State\TimeTracking\TimeTrackingProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TimeTrackingRepository::class)]
@@ -67,7 +68,7 @@ use Symfony\Component\Uid\Uuid;
             output: TimeTrackingDTO::class,
         )
     ],
-    formats: ["json"],
+    formats: ["jsonld"],
     provider: TimeTrackingProvider::class,
     processor: TimeTrackingProcessor::class
 )]
@@ -78,9 +79,11 @@ class TimeTracking extends EntityBase
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['readonly'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['timeTracking'])]
     private ?string $serviceDescription = null;
 
     #[ORM\Column(length: 255, enumType: TimeTrackingStatus::class)]
@@ -91,23 +94,29 @@ class TimeTracking extends EntityBase
             'example' => 'OPEN'
         ]
     )]
+    #[Groups(['timeTracking'])]
     private ?TimeTrackingStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'timeTrackings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user'])]
     private ?User $serviceUser = null;
 
     #[ORM\Column()]
+    #[Groups(['timeTracking'])]
     private ?\DateTimeImmutable $serviceStart = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['timeTracking'])]
     private ?\DateTimeImmutable $serviceEnd = null;
 
     #[ORM\ManyToOne(inversedBy: 'timeTrackings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['client'])]
     private ?Client $client = null;
 
     #[ORM\ManyToOne]
+    #[Groups(['price'])]
     private ?Price $overridePrice = null;
 
     public function getId(): ?Uuid
