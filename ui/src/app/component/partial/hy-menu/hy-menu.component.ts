@@ -4,6 +4,7 @@ import {HyMenuService} from "../../../service/hy-menu/hy-menu.service";
 import {HyMenuStatus, HyMenuType, HySubMenu} from "../../../model/hy-menu.model";
 import {AuthService} from "../../../service/auth/auth.service";
 import {HyBodyService} from "../../../service/hy-body/hy-body.service";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-hy-menu',
@@ -29,7 +30,8 @@ export class HyMenuComponent implements OnInit {
   constructor(
     private _hyMenu: HyMenuService,
     private _hyBody: HyBodyService,
-    private _auth: AuthService
+    private _auth: AuthService,
+    private _router: Router
   ) {
   }
 
@@ -53,6 +55,18 @@ export class HyMenuComponent implements OnInit {
         } else {
           this.menuIconOnly = false;
           this.menuWide = false;
+        }
+      }
+    });
+
+    /**
+     * Workaround: Hide Submenu when Route changes
+     */
+    this._router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this._hyMenu.hideSubMenu();
+        if (!this.menuWide) {
+          this._hyBody.hideBackdrop();
         }
       }
     });

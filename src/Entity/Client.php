@@ -24,22 +24,17 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Client [Persistence]']
             ],
+            paginationItemsPerPage: 10000,
             normalizationContext: [
-                'groups' => ['collection']
-            ],
-            denormalizationContext: [
-                'groups' => 'write'
-            ],
+                'groups' => ['client', 'id']
+            ]
         ),
         new Get(
             openapiContext: [
                 'tags' => ['Client [Persistence]']
             ],
             normalizationContext: [
-                'groups' => ['readonly', 'timeTracking', 'user', 'price']
-            ],
-            denormalizationContext: [
-                'groups' => 'client'
+                'groups' => ['client', 'timeTracking', 'price', 'id', 'timeonly']
             ],
         ),
         new Post(
@@ -47,7 +42,7 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Client [Persistence]']
             ],
             normalizationContext: [
-                'groups' => 'readonly'
+                'groups' => ['id','client']
             ],
             denormalizationContext: [
                 'groups' => 'client'
@@ -56,7 +51,7 @@ use Symfony\Component\Uid\Uuid;
             processor: ClientProcessor::class
         )
     ],
-    formats: ["jsonld"]
+    formats: ["json"]
 
 )]
 #[ORM\HasLifecycleCallbacks]
@@ -66,7 +61,7 @@ class Client extends EntityBase
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['readonly'])]
+    #[Groups(['id'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -78,7 +73,7 @@ class Client extends EntityBase
     private ?string $nameShort = null;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: TimeTracking::class, orphanRemoval: true)]
-    #[Groups(['readonly', 'timeTracking'])]
+    #[Groups(['timeTracking'])]
     private Collection $timeTrackings;
 
     #[ORM\Column(length: 15, nullable: false)]

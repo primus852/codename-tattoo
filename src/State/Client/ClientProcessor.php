@@ -31,6 +31,7 @@ class ClientProcessor implements ProcessorInterface
                 $client = new Client();
                 $client->setName($data->name);
                 $client->setNameShort($data->nameShort);
+                $client->setClientNumber($repo->getNextClientNumber());
                 $repo->save($client, true);
                 return $client;
             }

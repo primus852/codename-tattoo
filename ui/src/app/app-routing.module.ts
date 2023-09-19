@@ -6,6 +6,8 @@ import {AuthGuardService} from "./service/auth/auth-guard.service";
 import {BlankComponent} from "./component/page/blank/blank.component";
 import {Page404Component} from "./component/page/page404/page404.component";
 import {TimeTrackingOverviewComponent} from "./component/page/time-tracking-overview/time-tracking-overview.component";
+import {UserComponent} from "./component/page/config/user/user.component";
+import {AdminGuardService} from "./service/auth/admin-guard.service";
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -24,6 +26,17 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'einstellungen',
+    canActivate: [AdminGuardService],
+    component: UserComponent,
+    children: [
+      {
+        path: 'benutzerverwaltung',
+        component: UserComponent,
+      }
+    ]
+  },
+  {
     path: 'blank',
     component: BlankComponent,
     canActivate: [AuthGuardService]
@@ -32,7 +45,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

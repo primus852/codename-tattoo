@@ -68,7 +68,7 @@ use Symfony\Component\Uid\Uuid;
             output: TimeTrackingDTO::class,
         )
     ],
-    formats: ["jsonld"],
+    formats: ["json"],
     provider: TimeTrackingProvider::class,
     processor: TimeTrackingProcessor::class
 )]
@@ -112,7 +112,7 @@ class TimeTracking extends EntityBase
 
     #[ORM\ManyToOne(inversedBy: 'timeTrackings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['client'])]
+    #[Groups(['includeClient'])]
     private ?Client $client = null;
 
     #[ORM\ManyToOne]

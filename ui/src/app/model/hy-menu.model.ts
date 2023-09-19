@@ -19,5 +19,6 @@ export enum HySubMenu {
   PAGES = 'pages',
   APPS = 'apps',
   MENU = 'menu',
+  CONFIG = 'config',
 }
 

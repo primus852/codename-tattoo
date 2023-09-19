@@ -46,6 +46,13 @@
     <ng-container *ngIf="menuWide">
       <ng-container *ngTemplateOutlet="subMenuApps"></ng-container>
     </ng-container>
+    <button class="link" [class.active]="subMenuOpen === hySubMenu.CONFIG" (click)="toggleSubMenu(hySubMenu.CONFIG)" data-toggle="tooltip-menu" data-tippy-content="Config">
+      <span class="icon la la-user"></span>
+      <span class="title">Config</span>
+    </button>
+    <ng-container *ngIf="menuWide">
+      <ng-container *ngTemplateOutlet="subMenuConfig"></ng-container>
+    </ng-container>
     <button class="link" [class.active]="subMenuOpen === hySubMenu.MENU" (click)="toggleSubMenu(hySubMenu.MENU)" data-toggle="tooltip-menu" data-tippy-content="Menu">
       <span class="icon la la-sitemap"></span>
       <span class="title">Menu</span>
@@ -82,6 +89,11 @@
   <!-- Menu -->
   <ng-container *ngIf="!menuWide">
     <ng-container *ngTemplateOutlet="subMenuMenu"></ng-container>
+  </ng-container>
+
+  <!-- Menu -->
+  <ng-container *ngIf="!menuWide">
+    <ng-container *ngTemplateOutlet="subMenuConfig"></ng-container>
   </ng-container>
 </aside>
 
@@ -347,6 +359,23 @@
         <span class="la la-arrows-alt-h"></span>
         Wide
       </a>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #subMenuConfig>
+  <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.CONFIG" #collapseConfig>
+    <div class="menu-detail-wrapper">
+      <h6 class="uppercase">Administration</h6>
+      <a [routerLink]="'/einstellungen/benutzerverwaltung'" [routerLinkActive]="'active'">
+        <span class="la la-users"></span>
+        Users
+      </a>
+      <a href="#no-link">
+        <span class="la la-dollar"></span>
+        Prices
+      </a>
+      <hr />
     </div>
   </div>
 </ng-template>

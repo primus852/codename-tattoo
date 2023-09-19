@@ -17,6 +17,13 @@ services:
         arguments: [ '@doctrine.orm.entity_manager' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+    
+    App\Normalizer\PlainTimeNormalizer:
+        decorates: 'serializer.normalizer.datetime'
+        arguments: [ '@App\Normalizer\PlainTimeNormalizer.inner' ]
+    
+    App\DataPersister\CollectionPaginationDataPersister: ~
+    
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: [ '@.inner' ]
@@ -27,5 +34,9 @@ services:
             $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
     
     App\State\Price\PriceProvider:
+        bind:
+            $itemProvider: '@api_platform.doctrine.orm.state.item_provider'
+            
+    App\State\Client\ClientProvider:
         bind:
             $itemProvider: '@api_platform.doctrine.orm.state.item_provider'

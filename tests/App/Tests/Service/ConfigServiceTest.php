@@ -3,12 +3,9 @@
 namespace App\Tests\Service;
 
 use App\Entity\Price;
-use App\Entity\ConfigRateHours;
-use App\Entity\ConfigWeekDays;
 use App\Exception\InvalidTimeConfigException;
 use App\Service\ConfigService;
 use DateTime;
-use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\TestCase;
 

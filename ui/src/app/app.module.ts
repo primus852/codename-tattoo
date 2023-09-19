@@ -25,6 +25,7 @@ import {Page404Component} from './component/page/page404/page404.component';
 import {HyBreadcrumbComponent} from './component/partial/hy-breadcrumb/hy-breadcrumb.component';
 import {TimeTrackingOverviewComponent} from './component/page/time-tracking-overview/time-tracking-overview.component';
 import { MinutesToHoursPipe } from './pipe/minutes-to-hours.pipe';
+import { UserComponent } from './component/page/config/user/user.component';
 
 registerLocaleData(localeDe);
 
@@ -44,7 +45,8 @@ registerLocaleData(localeDe);
     Page404Component,
     HyBreadcrumbComponent,
     TimeTrackingOverviewComponent,
-    MinutesToHoursPipe
+    MinutesToHoursPipe,
+    UserComponent
   ],
   imports: [
     BrowserModule,

@@ -79,7 +79,7 @@ use Symfony\Component\Uid\Uuid;
             processor: PriceInRangeProcessor::class
         ),
     ],
-    formats: ["jsonld"]
+    formats: ["json"],
 )]
 #[ORM\HasLifecycleCallbacks]
 class Price extends EntityBase

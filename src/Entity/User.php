@@ -51,7 +51,7 @@ use Symfony\Component\Uid\Uuid;
             provider: UserShortCollectionProvider::class
         ),
     ],
-    formats: ["jsonld"],
+    formats: ["json"],
 
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

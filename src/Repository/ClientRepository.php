@@ -51,4 +51,15 @@ class ClientRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function getNextClientNumber(): string
+    {
+        $maxNumber = $this->createQueryBuilder('c')
+            ->select('MAX(cast_as_integer(c.clientNumber))')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $maxNumber !== null ? (string)($maxNumber + 1) : '1';
+    }
+
 }

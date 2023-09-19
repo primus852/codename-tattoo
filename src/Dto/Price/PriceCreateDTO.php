@@ -9,29 +9,29 @@ class PriceCreateDTO
 {
     #[Assert\NotBlank]
     #[Assert\Time]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $timeFrom;
 
     #[Assert\NotBlank]
     #[Assert\Time]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $timeTo;
 
     #[Assert\NotBlank]
     #[Assert\Positive]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public float $priceNet;
 
     #[Assert\NotBlank]
     #[Assert\Positive]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public float $weekDay;
 
     #[Assert\NotBlank]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $category;
 
     #[Assert\NotBlank]
-    #[Groups(['write', 'read'])]
+    #[Groups(['price'])]
     public string $name;
 }

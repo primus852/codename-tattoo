@@ -8,10 +8,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class ClientCreateDto
 {
     #[Assert\NotBlank]
-    #[Groups(['write', 'read'])]
+    #[Groups(['client'])]
     public string $name;
 
     #[Assert\NotBlank]
-    #[Groups(['write', 'read'])]
+    #[Groups(['client'])]
     public string $nameShort;
 }
