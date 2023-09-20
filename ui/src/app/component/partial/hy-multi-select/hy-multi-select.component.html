@@ -1,0 +1,23 @@
+<div
+  class="search-select"
+>
+  <label class="form-control-addon-within flex-row-reverse" data-toggle="search-select" aria-expanded="false"
+         [ngxTippy]="selectTemplate"
+         [tippyProps]="tooltip"
+  >
+    <input class="form-control ltr:pl-2 rtl:pr-2 border-none w-full" placeholder="Auswählen">
+    <span class="flex items-center ltr:pl-4 rtl:pr-4">
+       <app-hy-tag
+         *ngFor="let tag of tags; let i = index"
+         [value]="tag"
+         (tagRemoved)="onTagRemoved(i)"
+       ></app-hy-tag>
+     </span>
+  </label>
+  <template #selectTemplate>
+  <div class="search-select-menu">
+    <h6 class="uppercase">Bitte wählen</h6>
+    <div class="item" *ngFor="let value of values" (click)="addValue(value)">{{value}}</div>
+  </div>
+  </template>
+</div>

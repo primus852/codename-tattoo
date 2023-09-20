@@ -29,10 +29,7 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Users [Admin]']
             ],
             normalizationContext: [
-                'groups' => 'read'
-            ],
-            denormalizationContext: [
-                'groups' => 'write'
+                'groups' => ['id', 'user_create']
             ],
             input: UserCreateDto::class,
             processor: UserProcessor::class
@@ -60,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['readonly'])]
+    #[Groups(['id'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -75,7 +72,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var ?string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['user_create'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'serviceUser', targetEntity: TimeTracking::class)]

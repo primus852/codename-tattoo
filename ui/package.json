@@ -20,7 +20,7 @@
     "@angular/router": "^16.2.5",
     "@auth0/angular-jwt": "^5.1.2",
     "moment": "^2.29.4",
-    "ngx-tippy-wrapper": "^6.1.0",
+    "ngx-tippy-wrapper": "^6.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "tw-elements": "^1.0.0-beta1",

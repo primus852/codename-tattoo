@@ -7,8 +7,6 @@
       <small>just now</small>
       <button class="close" (click)="closeToast()">&times;</button>
     </div>
-    <div class="toast-body">
-      {{context}}
-    </div>
+    <div class="toast-body" [innerHTML]="context"></div>
   </div>
 </div>

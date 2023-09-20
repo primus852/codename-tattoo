@@ -26,6 +26,8 @@ import {HyBreadcrumbComponent} from './component/partial/hy-breadcrumb/hy-breadc
 import {TimeTrackingOverviewComponent} from './component/page/time-tracking-overview/time-tracking-overview.component';
 import { MinutesToHoursPipe } from './pipe/minutes-to-hours.pipe';
 import { UserComponent } from './component/page/config/user/user.component';
+import { HyMultiSelectComponent } from './component/partial/hy-multi-select/hy-multi-select.component';
+import { HyTagComponent } from './component/partial/hy-tag/hy-tag.component';
 
 registerLocaleData(localeDe);
 
@@ -46,7 +48,9 @@ registerLocaleData(localeDe);
     HyBreadcrumbComponent,
     TimeTrackingOverviewComponent,
     MinutesToHoursPipe,
-    UserComponent
+    UserComponent,
+    HyMultiSelectComponent,
+    HyTagComponent
   ],
   imports: [
     BrowserModule,

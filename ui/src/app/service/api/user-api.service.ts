@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {RequestService} from "../common/request.service";
 import {TimeTrackingAllResponseDTO} from "../../model/timetracking.model";
 import {BackendMethod, BackendRequestConfig} from "../../model/request.model";
-import {UserShortAllResponseDTO} from "../../model/user.model";
+import {UserCreate, UserCreateResponse, UserShortAllResponseDTO} from "../../model/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,21 @@ export class UserApiService {
   constructor(
     private _requestService: RequestService
   ) {
+  }
+
+  public createUser(user: UserCreate): Promise<UserCreateResponse> {
+    const requestParam: BackendRequestConfig = {
+      httpClientOptions: {
+        data: user
+      }
+    };
+
+    return this._requestService.makeRequest<UserCreateResponse>(
+      {
+        path: '/admin/user',
+        method: BackendMethod.POST
+      }, requestParam
+    );
   }
 
   public loadAllShort(): Promise<UserShortAllResponseDTO> {

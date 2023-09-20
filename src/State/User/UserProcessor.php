@@ -6,8 +6,10 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
+use App\Enum\UserRole;
 use App\Exception\UserAlreadyExistsException;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserProcessor implements ProcessorInterface
@@ -39,7 +41,16 @@ readonly class UserProcessor implements ProcessorInterface
                 }
 
                 if (isset($data->roles)) {
-                    $user->setRoles($data->roles);
+                    $roles = [];
+                    foreach ($data->roles as $preRole) {
+                        $roles[] = $this->_createProperRole($preRole);
+                    }
+
+                    if (!in_array('ROLE_USER', $roles)) {
+                        $roles[] = 'ROLE_USER';
+                    }
+
+                    $user->setRoles($roles);
                 } else {
                     $user->setRoles(array('ROLE_USER'));
                 }
@@ -55,4 +66,19 @@ readonly class UserProcessor implements ProcessorInterface
 
         return $data;
     }
+
+    /**
+     * @param string $givenRole
+     * @return string
+     * @throw InvalidArgumentException
+     */
+    private function _createProperRole(string $givenRole): string
+    {
+        $tempRole = strtoupper($givenRole);
+        if (!UserRole::isValid($tempRole)) {
+            throw new InvalidArgumentException("$tempRole is not a valid user role");
+        }
+        return 'ROLE_' . strtoupper($tempRole);
+    }
+
 }

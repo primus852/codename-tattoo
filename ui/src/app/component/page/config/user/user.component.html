@@ -1,9 +1,8 @@
-
-    <app-hy-breadcrumb
-      [pageTitle]="'Benutzerverwaltung'"
-      [pageRootLink]="'/benutzerverwaltung'"
-      [pages]="['Übersicht']"
-    ></app-hy-breadcrumb>
+<app-hy-breadcrumb
+  [pageTitle]="'Benutzerverwaltung'"
+  [pageRootLink]="'/benutzerverwaltung'"
+  [pages]="['Übersicht']"
+  xmlns="http://www.w3.org/1999/html"></app-hy-breadcrumb>
 
 
 <div class="grid lg:grid-cols-4 gap-5">
@@ -23,748 +22,31 @@
             </th>
             <th class="ltr:text-left rtl:text-right uppercase">Benutzer</th>
             <th class="text-center uppercase">Abk.</th>
-            <th class="text-center uppercase">Email</th>
-            <th class="text-center uppercase">Rolle(n)</th>
+            <th class="text-right uppercase">Email</th>
+            <th class="text-right uppercase">Rolle(n)</th>
             <th class="uppercase"></th>
           </tr>
           </thead>
           <tbody>
-          <tr>
+          <tr *ngFor="let user of userList">
             <td>
               <label class="custom-checkbox">
                 <input type="checkbox" data-toggle="rowSelection">
                 <span></span>
               </label>
             </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
+            <td>{{user.name}}</td>
+            <td class="text-center">{{user.code}}</td>
+            <td class="text-right">{{user.email}}</td>
+            <td class="text-right">
+              <div
+                *ngFor="let role of user.roles"
+                class="badge badge_outlined uppercase mx-1"
+                [class.badge_success]="role === 'Admin'"
+                [class.badge_secondary]="role !== 'Admin'"
+              >
+                {{role}}
               </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Admin</td>
-            <td class="text-center">AD</td>
-            <td class="text-left">admin@hyvee.de</td>
-            <td class="text-left">
-              <div class="badge badge_outlined badge_success uppercase mx-1">Admin</div>
-              <div class="badge badge_outlined badge_secondary uppercase mx-1">User</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Donec tempor lacus quis ex ullamcorper, ut cursus dui pellentesque.</td>
-            <td class="text-center">150</td>
-            <td class="text-center">December 10, 2019</td>
-            <td class="text-center">
-              <div class="badge badge_outlined badge_success uppercase">Published</div>
-            </td>
-            <td class="ltr:text-right rtl:text-left whitespace-nowrap">
-              <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
-                  <span class="la la-trash-alt"></span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
-                <span></span>
-              </label>
-            </td>
-            <td>Quisque molestie velit sed elit finibus, nec gravida nunc finibus.</td>
-            <td class="text-center">300</td>
-            <td class="text-center">December 5, 2019</td>
-            <td class="text-center">
-              <div class="badge badge_outlined badge_secondary uppercase">Draft</div>
             </td>
             <td class="ltr:text-right rtl:text-left whitespace-nowrap">
               <div class="inline-flex ltr:ml-auto rtl:mr-auto">
@@ -786,16 +68,27 @@
   <div class="flex flex-col gap-y-5 lg:col-span-2 xl:col-span-1">
 
     <!-- Create User -->
+    <form [formGroup]="userCreateForm" (ngSubmit)="submit()">
     <div class="card p-5 flex flex-col sm:gap-y-0 gap-y-5">
       <h3>Neuen Benutzer erstellen</h3>
       <div class="flex flex-col gap-y-5">
         <div class="flex items-center">
           <div class="w-1/4">
-            <label class="label block">Benutzername</label>
+            <label class="label block">Name</label>
           </div>
           <div class="w-3/4 ml-2">
             <div class="custom-select">
-              <input type="text" class="form-control" />
+              <input type="text" formControlName="username" class="form-control"/>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <div class="w-1/4">
+            <label class="label block">Passwort</label>
+          </div>
+          <div class="w-3/4 ml-2">
+            <div class="custom-select">
+              <input type="password" formControlName="password" class="form-control"/>
             </div>
           </div>
         </div>
@@ -805,7 +98,7 @@
           </div>
           <div class="w-3/4 ml-2">
             <div class="custom-select">
-              <input type="text" class="form-control" />
+              <input type="text" formControlName="userCode" class="form-control"/>
             </div>
           </div>
         </div>
@@ -815,26 +108,24 @@
           </div>
           <div class="w-3/4 ml-2">
             <div class="custom-select">
-              <input type="text" class="form-control" />
+              <input type="text" formControlName="email" class="form-control"/>
             </div>
           </div>
         </div>
         <div class="flex items-center">
           <div class="w-1/4">
-            <label class="label block">ist Admin?</label>
+            <label class="label block">Rollen</label>
           </div>
           <div class="w-3/4 ml-2">
-            <label class="switch">
-              <input type="checkbox">
-              <span></span>
-              <span>Ja</span>
-            </label>
+            <app-hy-multi-select (valuesPublished)="onValuesPublished($event)"
+                                 [values]="roles"></app-hy-multi-select>
           </div>
         </div>
       </div>
       <div class="flex flex-wrap gap-2 mt-5 justify-end ">
-        <button class="btn btn_primary uppercase">Erstellen</button>
+        <button class="btn btn_primary uppercase" type="submit">Erstellen</button>
       </div>
     </div>
+    </form>
   </div>
 </div>
