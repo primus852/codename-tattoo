@@ -31,7 +31,11 @@
           <tr *ngFor="let user of userList">
             <td>
               <label class="custom-checkbox">
-                <input type="checkbox" data-toggle="rowSelection">
+                <input
+                  type="checkbox"
+                  data-toggle="rowSelection"
+                  (change)="toggleSelection($event,user.id)"
+                >
                 <span></span>
               </label>
             </td>
@@ -69,63 +73,70 @@
 
     <!-- Create User -->
     <form [formGroup]="userCreateForm" (ngSubmit)="submit()">
-    <div class="card p-5 flex flex-col sm:gap-y-0 gap-y-5">
-      <h3>Neuen Benutzer erstellen</h3>
-      <div class="flex flex-col gap-y-5">
-        <div class="flex items-center">
-          <div class="w-1/4">
-            <label class="label block">Name</label>
+      <div class="card p-5 flex flex-col sm:gap-y-0 gap-y-5">
+        <h3>Neuen Benutzer erstellen</h3>
+        <div class="flex flex-col gap-y-5">
+          <div class="flex items-center">
+            <div class="w-1/4">
+              <label class="label block">Name</label>
+            </div>
+            <div class="w-3/4 ml-2">
+              <div class="custom-select">
+                <input type="text" formControlName="username" class="form-control"/>
+              </div>
+            </div>
           </div>
-          <div class="w-3/4 ml-2">
-            <div class="custom-select">
-              <input type="text" formControlName="username" class="form-control"/>
+          <div class="flex items-center">
+            <div class="w-1/4">
+              <label class="label block">Passwort</label>
+            </div>
+            <div class="w-3/4 ml-2">
+              <div class="custom-select">
+                <input type="password" formControlName="password" class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-1/4">
+              <label class="label block">Kürzel</label>
+            </div>
+            <div class="w-3/4 ml-2">
+              <div class="custom-select">
+                <input type="text" formControlName="userCode" class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-1/4">
+              <label class="label block">E-Mail</label>
+            </div>
+            <div class="w-3/4 ml-2">
+              <div class="custom-select">
+                <input type="text" formControlName="email" class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-1/4">
+              <label class="label block">Rollen</label>
+            </div>
+            <div class="w-3/4 ml-2">
+              <app-hy-multi-select (valuesPublished)="onValuesPublished($event)"
+                                   [values]="roles"></app-hy-multi-select>
             </div>
           </div>
         </div>
-        <div class="flex items-center">
-          <div class="w-1/4">
-            <label class="label block">Passwort</label>
-          </div>
-          <div class="w-3/4 ml-2">
-            <div class="custom-select">
-              <input type="password" formControlName="password" class="form-control"/>
-            </div>
-          </div>
-        </div>
-        <div class="flex items-center">
-          <div class="w-1/4">
-            <label class="label block">Kürzel</label>
-          </div>
-          <div class="w-3/4 ml-2">
-            <div class="custom-select">
-              <input type="text" formControlName="userCode" class="form-control"/>
-            </div>
-          </div>
-        </div>
-        <div class="flex items-center">
-          <div class="w-1/4">
-            <label class="label block">E-Mail</label>
-          </div>
-          <div class="w-3/4 ml-2">
-            <div class="custom-select">
-              <input type="text" formControlName="email" class="form-control"/>
-            </div>
-          </div>
-        </div>
-        <div class="flex items-center">
-          <div class="w-1/4">
-            <label class="label block">Rollen</label>
-          </div>
-          <div class="w-3/4 ml-2">
-            <app-hy-multi-select (valuesPublished)="onValuesPublished($event)"
-                                 [values]="roles"></app-hy-multi-select>
-          </div>
+        <div class="flex flex-wrap gap-2 mt-5 justify-end ">
+          <button class="btn btn_primary uppercase" type="submit">Erstellen</button>
         </div>
       </div>
-      <div class="flex flex-wrap gap-2 mt-5 justify-end ">
-        <button class="btn btn_primary uppercase" type="submit">Erstellen</button>
-      </div>
-    </div>
     </form>
   </div>
 </div>
+<app-hy-batch-bar
+  [itemsSelected]="itemsSelected"
+  [showBar]="hasItemsSelected"
+  [identifier]="'Benutzer'"
+  [action]="'remove'"
+  (onAction)="removeItemsSelected()"
+></app-hy-batch-bar>

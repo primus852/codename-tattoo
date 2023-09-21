@@ -12,12 +12,20 @@ export interface UserShort {
   roles: Array<UserRole>;
 }
 
+export interface UsersDelete{
+  ids: Array<Uuid>;
+}
+
 export interface UserCreate {
   email: string;
   code: string;
   name: string;
   password: string;
   roles: Array<UserRole>;
+}
+
+export interface UsersDeleteResponse {
+  deleted: Array<Uuid>;
 }
 
 export interface UserCreateResponse {

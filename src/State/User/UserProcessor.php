@@ -2,12 +2,16 @@
 
 namespace App\State\User;
 
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
+use App\Dto\User\UsersDeleteResponseDto;
 use App\Entity\User;
 use App\Enum\UserRole;
 use App\Exception\UserAlreadyExistsException;
+use App\Exception\UserNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -22,9 +26,15 @@ readonly class UserProcessor implements ProcessorInterface
     }
 
     /**
+     * @param mixed $data
+     * @param Operation $operation
+     * @param array $uriVariables
+     * @param array $context
+     * @return User|mixed
      * @throws UserAlreadyExistsException
+     * @throws UserNotFoundException
      */
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
         if ($operation instanceof Post) {
             $repo = $this->entityManager->getRepository(User::class);
@@ -62,6 +72,19 @@ readonly class UserProcessor implements ProcessorInterface
 
             throw new UserAlreadyExistsException('USER_CREATION_ERROR');
 
+        } elseif ($operation instanceof Patch) {
+            if ($context['operation']->getUriTemplate() === '/admin/users') {
+                foreach ($data->ids as $id) {
+                    $repo = $this->entityManager->getRepository(User::class);
+                    $user = $repo->find($id);
+                    try {
+                        $repo->remove($user, true);
+                    } catch (\Exception $e) {
+                        throw new UserNotFoundException('USER_DELETION_ERROR');
+                    }
+                }
+                return new UsersDeleteResponseDto($data->ids);
+            }
         }
 
         return $data;

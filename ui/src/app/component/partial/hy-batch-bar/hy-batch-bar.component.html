@@ -1,0 +1,14 @@
+<div
+  [class.hidden]="!showBar"
+  class="footer-bar">
+  <div class="flex items-center uppercase">
+    <span class="badge badge_primary ltr:mr-2 rtl:ml-2">{{itemsSelected.length}}</span>
+    {{identifier}} selektiert
+  </div>
+  <div class="ltr:ml-auto rtl:mr-auto">
+    <button class="btn btn_danger uppercase" *ngIf="action === 'remove'" (click)="handleAction()">
+      <span class="la la-trash-alt text-xl leading-none ltr:mr-2 rtl:ml-2"></span>
+      Löschen
+    </button>
+  </div>
+</div>

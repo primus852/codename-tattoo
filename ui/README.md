@@ -1,6 +1,7 @@
 # UP NEXT
+- Add Confirmation Modal to Delete
+- Disallow Deletion of Self in Users
 - Make each User editable
-- Toggle Bottom Bar when User selected (for batch actions / blog-list.html)
 - Continue Top Menu Toggles
 - Datepicker Frontend TimeTracking
 - add Pagination
@@ -16,6 +17,7 @@
 - Add Pagination to Collection endpoints (currently 10000 max.)
 
 # DONE
+- ~~Toggle Bottom Bar when User selected (for batch actions / blog-list.html)~~
 - ~~Add "Settings" to configure from Frontend~~
 - ~~Start Stundenzettel FE~~
 - ~~Enrich Token with Full Name~~

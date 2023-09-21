@@ -40,7 +40,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
         if ($role === UserRole::ADMIN) {
             $user = new User();
             $user->setEmail('admin@hyvee.de');
-            $user->setRoles(array(UserRole::ADMIN));
+            $user->setRoles(array('ROLE_'.UserRole::ADMIN->toString()));
             $user->setCode('AD');
             $user->setName('Admin');
             $user->setPassword('$2a$12$eaGjY48bAXkYCqSseLZxHePa0Jj7SGK7OR8k66B9/DulY8QbRZXLu');
@@ -49,7 +49,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             for ($i = 0; $i < $numberOfUsers; $i++) {
                 $user = new User();
                 $user->setEmail('user' . $i . '@hyvee.de');
-                $user->setRoles(array(UserRole::USER));
+                $user->setRoles(array('ROLE_'.UserRole::USER->toString()));
                 $user->setCode('US' . $i);
                 $user->setName('User' . $i);
                 $user->setPassword('$2a$12$eaGjY48bAXkYCqSseLZxHePa0Jj7SGK7OR8k66B9/DulY8QbRZXLu');

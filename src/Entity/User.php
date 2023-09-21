@@ -5,8 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Dto\User\UserCreateDto;
+use App\Dto\User\UsersDeleteDto;
+use App\Dto\User\UsersDeleteResponseDto;
 use App\Repository\UserRepository;
 use App\State\User\UserProcessor;
 use App\State\User\UserShortCollectionProvider;
@@ -23,6 +26,15 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
+        new Patch(
+            uriTemplate: '/admin/users',
+            openapiContext: [
+                'tags' => ['Users [Admin]'],
+                'description' => 'Delete multiple Users by IDs'
+            ],
+            input: UsersDeleteDto::class,
+            processor: UserProcessor::class
+        ),
         new Post(
             uriTemplate: '/admin/user',
             openapiContext: [

@@ -28,6 +28,7 @@ import { MinutesToHoursPipe } from './pipe/minutes-to-hours.pipe';
 import { UserComponent } from './component/page/config/user/user.component';
 import { HyMultiSelectComponent } from './component/partial/hy-multi-select/hy-multi-select.component';
 import { HyTagComponent } from './component/partial/hy-tag/hy-tag.component';
+import { HyBatchBarComponent } from './component/partial/hy-batch-bar/hy-batch-bar.component';
 
 registerLocaleData(localeDe);
 
@@ -50,7 +51,8 @@ registerLocaleData(localeDe);
     MinutesToHoursPipe,
     UserComponent,
     HyMultiSelectComponent,
-    HyTagComponent
+    HyTagComponent,
+    HyBatchBarComponent
   ],
   imports: [
     BrowserModule,

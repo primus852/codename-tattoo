@@ -51,6 +51,8 @@ export class RequestService {
     switch (endpoint.method) {
       case BackendMethod.POST:
         return this._makePostRequest<T>(formattedUrl, httpClientOptions);
+      case BackendMethod.PATCH:
+        return this._makePatchRequest<T>(formattedUrl, httpClientOptions);
       case BackendMethod.PUT:
         return this._makePutRequest<T>(formattedUrl, httpClientOptions);
       case BackendMethod.GET:
@@ -73,6 +75,21 @@ export class RequestService {
   private _makePostRequest<T>(url: string, httpClientOptions: HttpOptions): Observable<T> {
 
     return this._http.post<T>(url, httpClientOptions.data, httpClientOptions).pipe(
+      tap(result => {
+        return result;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => {
+          new Error(JSON.stringify(error));
+        });
+      })
+    );
+
+  }
+
+  private _makePatchRequest<T>(url: string, httpClientOptions: HttpOptions): Observable<T> {
+
+    return this._http.patch<T>(url, httpClientOptions.data, httpClientOptions).pipe(
       tap(result => {
         return result;
       }),

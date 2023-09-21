@@ -3,6 +3,7 @@ import {UserCreate, UserRole, UserShort} from "../../../../model/user.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HyToastService} from "../../../../service/hy-toast/hy-toast.service";
 import {UserApiService} from "../../../../service/api/user-api.service";
+import {Uuid} from "../../../../model/uuid.model";
 
 @Component({
   selector: 'app-user',
@@ -14,6 +15,8 @@ export class UserComponent implements OnInit {
   public roles: Array<UserRole> = [];
   public userCreateForm: FormGroup;
   public userList: Array<UserShort> = [];
+  public hasItemsSelected: boolean = false;
+  public itemsSelected: Array<Uuid> = [];
 
   constructor(
     private _fb: FormBuilder,
@@ -90,5 +93,37 @@ export class UserComponent implements OnInit {
         autoClose: false,
       });
     })
+  }
+
+
+  toggleSelection(event: Event | null, id: Uuid) {
+    // @ts-ignore
+    if (event?.target.checked) {
+      this.itemsSelected.push(id);
+    } else {
+      this.itemsSelected = this.itemsSelected.filter(itemId => itemId !== id);
+    }
+    this.hasItemsSelected = this.itemsSelected.length > 0;
+  }
+
+  removeItemsSelected() {
+    this._userApiService.batchDeleteUsers({
+      ids: this.itemsSelected
+    }).then((response) => {
+      const deletedIds = response.deleted;
+
+      this.userList = this.userList.filter(user => !deletedIds.includes(user.id));
+      this.itemsSelected = this.itemsSelected.filter(id => !deletedIds.includes(id));
+
+      this.hasItemsSelected = this.itemsSelected.length > 0;
+
+      this._hyToast.showToast('Erfolg!', 'Benutzer gelöscht', {
+        autoClose: true,
+      });
+    }).catch((err) => {
+      this._hyToast.showToast('Benutzer nicht gelöscht!', err.message, {
+        autoClose: false,
+      });
+    });
   }
 }
