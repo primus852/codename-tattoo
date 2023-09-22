@@ -19,6 +19,8 @@
     "@angular/platform-browser-dynamic": "^16.2.5",
     "@angular/router": "^16.2.5",
     "@auth0/angular-jwt": "^5.1.2",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "moment": "^2.29.4",
     "ngx-tippy-wrapper": "^6.2.2",
     "rxjs": "~7.8.0",

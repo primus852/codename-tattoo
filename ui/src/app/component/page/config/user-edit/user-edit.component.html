@@ -1,0 +1,165 @@
+<app-hy-breadcrumb
+  [pageTitle]="'BREADCRUMBS.CONFIG.USER_MANAGEMENT'"
+  [pageRootLink]="'/einstellungen/benutzerverwaltung'"
+  [pages]="pages"
+></app-hy-breadcrumb>
+
+<div class="grid lg:grid-cols-4 gap-5">
+
+  <!-- Content -->
+  <div class="lg:col-span-2 xl:col-span-3">
+    <div class="card p-5">
+      <div class="mb-5 xl:w-1/2">
+        <label class="label block mb-2" for="title">Title</label>
+        <input id="title" class="form-control">
+      </div>
+      <div class="mb-5 xl:w-1/2">
+        <label class="label block mb-2" for="slug">Slug</label>
+        <input id="slug" class="form-control">
+      </div>
+      <div class="mb-5">
+        <label class="label block mb-2" for="content">Content</label>
+        <textarea id="content" class="form-control" rows="16"></textarea>
+      </div>
+      <div class="xl:w-1/2">
+        <label class="label block mb-2" for="excerpt">Excerpt</label>
+        <textarea id="excerpt" class="form-control" rows="8"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-y-5 lg:col-span-2 xl:col-span-1">
+
+    <!-- Publish -->
+    <form [formGroup]="userUpdateForm" (ngSubmit)="submit()">
+      <div class="card p-5 flex flex-col sm:gap-y-0 gap-y-5">
+        <h3>{{'USER.CREATE_NEW_HEADER' | translate}}</h3>
+        <div class="flex flex-col gap-y-5">
+          <div class="relative mt-5">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="username">{{'USER.CREATE_USERNAME' | translate}}</label>
+            <input id="username" class="form-control mt-2 pt-5" formControlName="username">
+          </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="password">{{'USER.CREATE_PASSWORD' | translate}}</label>
+            <input id="password" class="form-control mt-2 pt-5" formControlName="password">
+          </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="userCode">{{'USER.CREATE_USERCODE' | translate}}</label>
+            <input id="userCode" class="form-control mt-2 pt-5" formControlName="userCode">
+          </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="email">{{'USER.CREATE_EMAIL' | translate}}</label>
+            <input id="email" class="form-control mt-2 pt-5" formControlName="email">
+          </div>
+          <div class="relative">
+            <app-hy-multi-select (valuesPublished)="onValuesPublished($event)" [values]="roles"
+                                 [label]="'USER.CREATE_ROLES'"></app-hy-multi-select>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-5 justify-end ">
+          <button class="btn btn_warning uppercase" type="submit">{{'GENERIC.UPDATE' | translate}}</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Categories -->
+    <div class="card p-5">
+      <h3>Categories</h3>
+      <div class="tabs">
+        <nav class="tab-nav mt-5">
+          <button class="nav-link h5 uppercase active" data-toggle="tab" data-target="#tab-1">Most
+            Used</button>
+          <button class="nav-link h5 uppercase" data-toggle="tab" data-target="#tab-2">All
+            Categories</button>
+        </nav>
+        <div class="tab-content mt-5">
+          <div id="tab-1" class="collapse open flex flex-col gap-y-2">
+            <label class="custom-checkbox">
+              <input type="checkbox" checked>
+              <span></span>
+              <span>Uncategorized</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Recent</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Featured</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Trending</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>International</span>
+            </label>
+          </div>
+          <div id="tab-2" class="collapse flex flex-col gap-y-2">
+            <label class="custom-checkbox">
+              <input type="checkbox" checked>
+              <span></span>
+              <span>Uncategorized</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Recent</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Featured</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>Trending</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox">
+              <span></span>
+              <span>International</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="card p-5">
+      <h3>Tags</h3>
+      <div class="mt-5">
+        <label class="form-control-addon-within flex-row-reverse">
+          <input class="form-control ltr:pl-2 rtl:pr-2 border-none w-full" placeholder="Enter a tag">
+          <span class="flex items-center ltr:pl-4 rtl:pr-4">
+                                <span class="badge badge_primary">
+                                    tag
+                                    <button type="button" class="ltr:ml-1 rtl:mr-1 la la-times"></button>
+                                </span>
+                            </span>
+        </label>
+        <small class="block mt-2">Seperate tags with commas</small>
+      </div>
+    </div>
+
+    <!-- Featured Image -->
+    <div class="card p-5">
+      <h3>Featured Image</h3>
+      <button class="mt-5 btn btn_outlined btn_secondary uppercase">Browse</button>
+    </div>
+  </div>
+</div>

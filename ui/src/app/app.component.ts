@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {HyMenuService} from "./service/hy-menu/hy-menu.service";
 import {HyBodyService} from "./service/hy-body/hy-body.service";
 import {HyUiMode} from "./model/hy-body.model";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-root',
@@ -21,10 +22,13 @@ export class AppComponent implements OnInit, OnDestroy {
   public hyUiMode = HyUiMode;
 
   constructor(
+    translate: TranslateService,
     private _auth: AuthService,
     private _hyMenu: HyMenuService,
     private _hyBody: HyBodyService
   ) {
+    translate.setDefaultLang('de');
+    translate.use('de');
   }
 
   ngOnInit() {

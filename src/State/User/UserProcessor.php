@@ -11,28 +11,30 @@ use App\Dto\User\UsersDeleteResponseDto;
 use App\Entity\User;
 use App\Enum\UserRole;
 use App\Exception\UserAlreadyExistsException;
+use App\Exception\UserConflictException;
 use App\Exception\UserNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 
 readonly class UserProcessor implements ProcessorInterface
 {
 
     public function __construct(
         private EntityManagerInterface      $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher)
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private Security                    $security,
+    )
     {
     }
 
     /**
-     * @param mixed $data
-     * @param Operation $operation
-     * @param array $uriVariables
-     * @param array $context
-     * @return User|mixed
      * @throws UserAlreadyExistsException
      * @throws UserNotFoundException
+     * @throws UserConflictException
      */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
@@ -73,10 +75,18 @@ readonly class UserProcessor implements ProcessorInterface
             throw new UserAlreadyExistsException('USER_CREATION_ERROR');
 
         } elseif ($operation instanceof Patch) {
-            if ($context['operation']->getUriTemplate() === '/admin/users') {
+            if ($context['operation']->getUriTemplate() === '/users') {
                 foreach ($data->ids as $id) {
                     $repo = $this->entityManager->getRepository(User::class);
                     $user = $repo->find($id);
+
+                    /* @var $uid UuidV7 */
+                    $uid = $this->security->getUser()->getId();
+
+                    if ($uid->equals(Uuid::fromString($id))) {
+                        throw new UserConflictException('USER_SELF_DELETION_ERROR');
+                    }
+
                     try {
                         $repo->remove($user, true);
                     } catch (\Exception $e) {
@@ -84,6 +94,24 @@ readonly class UserProcessor implements ProcessorInterface
                     }
                 }
                 return new UsersDeleteResponseDto($data->ids);
+            }
+        } elseif ($operation instanceof Delete) {
+            if ($context['operation']->getUriTemplate() === '/user/{id}') {
+                $repo = $this->entityManager->getRepository(User::class);
+                $user = $repo->find($data->getId());
+
+                /* @var $uid UuidV7 */
+                $uid = $this->security->getUser()->getId();
+
+                if ($uid->equals($data->getId())) {
+                    throw new UserConflictException('USER_SELF_DELETION_ERROR');
+                }
+
+                try {
+                    $repo->remove($user, true);
+                } catch (\Exception $e) {
+                    throw new UserNotFoundException('USER_DELETION_ERROR');
+                }
             }
         }
 

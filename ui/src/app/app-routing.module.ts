@@ -8,6 +8,7 @@ import {Page404Component} from "./component/page/page404/page404.component";
 import {TimeTrackingOverviewComponent} from "./component/page/time-tracking-overview/time-tracking-overview.component";
 import {UserComponent} from "./component/page/config/user/user.component";
 import {AdminGuardService} from "./service/auth/admin-guard.service";
+import {UserEditComponent} from "./component/page/config/user-edit/user-edit.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -28,11 +29,14 @@ const routes: Routes = [
   {
     path: 'einstellungen',
     canActivate: [AdminGuardService],
-    component: UserComponent,
     children: [
       {
         path: 'benutzerverwaltung',
         component: UserComponent,
+      },
+      {
+        path: 'benutzer/:id',
+        component: UserEditComponent,
       }
     ]
   },

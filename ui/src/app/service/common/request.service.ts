@@ -66,7 +66,7 @@ export class RequestService {
           status: 500
         });
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       }
     }
@@ -80,7 +80,7 @@ export class RequestService {
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       })
     );
@@ -95,7 +95,7 @@ export class RequestService {
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       })
     );
@@ -110,7 +110,7 @@ export class RequestService {
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       })
     );
@@ -125,7 +125,7 @@ export class RequestService {
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       })
     );
@@ -140,7 +140,7 @@ export class RequestService {
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => {
-          new Error(JSON.stringify(error));
+          return error;
         });
       })
     );

@@ -6,9 +6,10 @@ import {
   UserCreate,
   UserCreateResponse,
   UsersDelete,
-  UsersDeleteResponse,
+  UsersDeleteResponse, UserShort,
   UserShortAllResponseDTO
 } from "../../model/user.model";
+import {Uuid} from "../../model/uuid.model";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,32 @@ export class UserApiService {
   ) {
   }
 
+  public deleteUserById(id: Uuid): Promise<void>{
+    const requestParam: BackendRequestConfig = {
+      urlParams: {id}
+    };
+
+    return this._requestService.makeRequest<void>(
+      {
+        path: '/user/{id}',
+        method: BackendMethod.DELETE
+      }, requestParam
+    );
+  }
+
+  public loadUserById(id: Uuid): Promise<UserShort>{
+    const requestParam: BackendRequestConfig = {
+      urlParams: {id}
+    };
+
+    return this._requestService.makeRequest<UserShort>(
+      {
+        path: '/user/{id}',
+        method: BackendMethod.GET
+      }, requestParam
+    );
+  }
+
   public batchDeleteUsers(users: UsersDelete): Promise<UsersDeleteResponse>{
     const requestParam: BackendRequestConfig = {
       httpClientOptions: {
@@ -29,7 +56,7 @@ export class UserApiService {
 
     return this._requestService.makeRequest<UsersDeleteResponse>(
       {
-        path: '/admin/users',
+        path: '/users',
         method: BackendMethod.PATCH
       }, requestParam
     );

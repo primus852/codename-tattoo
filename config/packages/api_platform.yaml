@@ -15,6 +15,7 @@ api_platform:
         App\Exception\NotLoggedInException: 401
         App\Exception\TimeTrackingNotFoundException: 404
         App\Exception\UserNotFoundException: 404
+        App\Exception\UserConflictException: 409
         App\Exception\NoAdminException: 401
         App\Exception\InvalidTimeConfigException: 403
         App\Exception\ConfigBlankException: 403

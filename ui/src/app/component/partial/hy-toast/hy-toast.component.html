@@ -3,10 +3,10 @@
   <div class="toast mb-4" [@flyInOut] *ngIf="toggleFlag"
   >
     <div class="toast-header">
-      <h5>{{title}}</h5>
+      <h5>{{title | translate}}</h5>
       <small>just now</small>
       <button class="close" (click)="closeToast()">&times;</button>
     </div>
-    <div class="toast-body" [innerHTML]="context"></div>
+    <div class="toast-body" [innerHTML]="context | translate"></div>
   </div>
 </div>

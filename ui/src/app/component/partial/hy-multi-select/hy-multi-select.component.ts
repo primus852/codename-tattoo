@@ -11,6 +11,9 @@ export class HyMultiSelectComponent {
   @Input()
   public values!: any;
 
+  @Input()
+  public label!: string;
+
   @Output()
   public valuesPublished = new EventEmitter<Array<any>>();
 

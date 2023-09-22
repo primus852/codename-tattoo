@@ -1,4 +1,5 @@
 import {Uuid} from "./uuid.model";
+import {TimeTrackingDetail} from "./timetracking.model";
 
 export interface UserShortAllResponseDTO {
   users: Array<UserShort>;
@@ -8,6 +9,15 @@ export interface UserShort {
   id: Uuid;
   name: string;
   email: string;
+  code: string;
+  roles: Array<UserRole>;
+}
+
+export interface User {
+  id: Uuid;
+  name: string;
+  email: string;
+  timeTrackings: Array<TimeTrackingDetail>;
   code: string;
   roles: Array<UserRole>;
 }
@@ -25,7 +35,7 @@ export interface UserCreate {
 }
 
 export interface UsersDeleteResponse {
-  deleted: Array<Uuid>;
+  ids: Array<Uuid>;
 }
 
 export interface UserCreateResponse {

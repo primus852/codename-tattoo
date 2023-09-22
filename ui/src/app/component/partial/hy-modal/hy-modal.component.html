@@ -1,0 +1,30 @@
+<div
+  [class.active]="isVisible"
+  class="modal" data-animations="fadeInDown, fadeOutUp">
+  <div class="modal-dialog modal-dialog_centered max-w-2xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          {{(modalInfo) ? (modalInfo.title | translate) : ''}}
+        </h2>
+        <button class="close la la-times" data-dismiss="modal" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body" [innerHTML]="(modalInfo) ? (modalInfo.context | translate) : '' "></div>
+      <div class="modal-footer">
+        <div class="flex ltr:ml-auto rtl:mr-auto" *ngIf="actionButton2">
+          <button
+            (click)="actionButton2()"
+            class="btn uppercase {{modalInfo?.actionButton2Class}}">
+            {{(modalInfo) ? ((modalInfo.actionButtonText2) ? (modalInfo.actionButtonText2 | translate) : '') : ''}}
+          </button>
+          <button
+            class="btn ltr:ml-2 rtl:mr-2 uppercase {{modalInfo?.actionButton1Class}}"
+            (click)="actionButton1()"
+          >
+            {{(modalInfo) ? ((modalInfo.actionButtonText1) ? (modalInfo.actionButtonText1 | translate) : '') : ''}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

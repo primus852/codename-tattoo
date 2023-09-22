@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UsersDeleteDto;
-use App\Dto\User\UsersDeleteResponseDto;
 use App\Repository\UserRepository;
 use App\State\User\UserProcessor;
 use App\State\User\UserShortCollectionProvider;
@@ -27,9 +27,9 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Patch(
-            uriTemplate: '/admin/users',
+            uriTemplate: '/users',
             openapiContext: [
-                'tags' => ['Users [Admin]'],
+                'tags' => ['Users [Persistence]'],
                 'description' => 'Delete multiple Users by IDs'
             ],
             input: UsersDeleteDto::class,
@@ -51,6 +51,9 @@ use Symfony\Component\Uid\Uuid;
             openapiContext: [
                 'tags' => ['Users [Persistence]']
             ],
+            normalizationContext: [
+                'groups' => ['id', 'user_extended']
+            ]
         ),
         new GetCollection(
             uriTemplate: '/users/short',
@@ -58,6 +61,19 @@ use Symfony\Component\Uid\Uuid;
                 'tags' => ['Users [Persistence]']
             ],
             provider: UserShortCollectionProvider::class
+        ),
+        new Delete(
+            uriTemplate: '/user/{id}',
+            openapiContext: [
+                'tags' => ['Users [Persistence]']
+            ],
+            normalizationContext: [
+                'groups' => ['id']
+            ],
+            denormalizationContext: [
+                'groups' => ['id']
+            ],
+            processor: UserProcessor::class
         ),
     ],
     formats: ["json"],

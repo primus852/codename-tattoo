@@ -10,7 +10,7 @@ import {NgxTippyModule} from "ngx-tippy-wrapper";
 import {FullscreenToggleComponent} from './component/partial/fullscreen-toggle/fullscreen-toggle.component';
 import {LoginComponent} from './component/page/login/login.component';
 import {ReactiveFormsModule} from "@angular/forms";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {JwtHelperService, JWT_OPTIONS} from '@auth0/angular-jwt';
 import {AuthInterceptor} from "./service/auth/interceptor";
 import {BlankComponent} from './component/page/blank/blank.component';
@@ -24,13 +24,21 @@ import {HyMenuComponent} from './component/partial/hy-menu/hy-menu.component';
 import {Page404Component} from './component/page/page404/page404.component';
 import {HyBreadcrumbComponent} from './component/partial/hy-breadcrumb/hy-breadcrumb.component';
 import {TimeTrackingOverviewComponent} from './component/page/time-tracking-overview/time-tracking-overview.component';
-import { MinutesToHoursPipe } from './pipe/minutes-to-hours.pipe';
-import { UserComponent } from './component/page/config/user/user.component';
-import { HyMultiSelectComponent } from './component/partial/hy-multi-select/hy-multi-select.component';
-import { HyTagComponent } from './component/partial/hy-tag/hy-tag.component';
-import { HyBatchBarComponent } from './component/partial/hy-batch-bar/hy-batch-bar.component';
+import {MinutesToHoursPipe} from './pipe/minutes-to-hours.pipe';
+import {UserComponent} from './component/page/config/user/user.component';
+import {HyMultiSelectComponent} from './component/partial/hy-multi-select/hy-multi-select.component';
+import {HyTagComponent} from './component/partial/hy-tag/hy-tag.component';
+import {HyBatchBarComponent} from './component/partial/hy-batch-bar/hy-batch-bar.component';
+import {HyModalComponent} from './component/partial/hy-modal/hy-modal.component';
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import { UserEditComponent } from './component/page/config/user-edit/user-edit.component';
 
 registerLocaleData(localeDe);
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -52,7 +60,9 @@ registerLocaleData(localeDe);
     UserComponent,
     HyMultiSelectComponent,
     HyTagComponent,
-    HyBatchBarComponent
+    HyBatchBarComponent,
+    HyModalComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,
@@ -60,12 +70,19 @@ registerLocaleData(localeDe);
     AppRoutingModule,
     NgxTippyModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule, // required animations module
+    BrowserAnimationsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     {provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })

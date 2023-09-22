@@ -1,3 +1,6 @@
+<label for="randomId" class="-mt-2 z-[999] label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading">
+  {{label | translate}}
+</label>
 <div
   class="search-select"
 >
@@ -5,7 +8,7 @@
          [ngxTippy]="selectTemplate"
          [tippyProps]="tooltip"
   >
-    <input class="form-control ltr:pl-2 rtl:pr-2 border-none w-full" placeholder="Auswählen">
+    <input id="randomId" class="form-control ltr:pl-2 rtl:pr-2 pt-5 border-none w-full" placeholder="Auswählen">
     <span class="flex items-center ltr:pl-4 rtl:pr-4">
        <app-hy-tag
          *ngFor="let tag of tags; let i = index"

@@ -47,8 +47,8 @@
       <ng-container *ngTemplateOutlet="subMenuApps"></ng-container>
     </ng-container>
     <button class="link" [class.active]="subMenuOpen === hySubMenu.CONFIG" (click)="toggleSubMenu(hySubMenu.CONFIG)" data-toggle="tooltip-menu" data-tippy-content="Config">
-      <span class="icon la la-user"></span>
-      <span class="title">Config</span>
+      <span class="icon la la-cog"></span>
+      <span class="title">{{'GENERIC.SETTINGS' | translate}}</span>
     </button>
     <ng-container *ngIf="menuWide">
       <ng-container *ngTemplateOutlet="subMenuConfig"></ng-container>
@@ -366,14 +366,14 @@
 <ng-template #subMenuConfig>
   <div class="menu-detail" [class.collapse]="menuWide" [class.open]="subMenuOpen === hySubMenu.CONFIG" #collapseConfig>
     <div class="menu-detail-wrapper">
-      <h6 class="uppercase">Administration</h6>
+      <h6 class="uppercase">{{'GENERIC.ADMINISTRATION' | translate}}</h6>
       <a [routerLink]="'/einstellungen/benutzerverwaltung'" [routerLinkActive]="'active'">
         <span class="la la-users"></span>
-        Users
+        {{'BREADCRUMBS.CONFIG.USER_MANAGEMENT' | translate}}
       </a>
       <a href="#no-link">
         <span class="la la-dollar"></span>
-        Prices
+        {{'BREADCRUMBS.CONFIG.PRICES' | translate}}
       </a>
       <hr />
     </div>

@@ -1,8 +1,8 @@
 <app-hy-breadcrumb
-  [pageTitle]="'Benutzerverwaltung'"
-  [pageRootLink]="'/benutzerverwaltung'"
-  [pages]="['Übersicht']"
-  xmlns="http://www.w3.org/1999/html"></app-hy-breadcrumb>
+  [pageTitle]="'BREADCRUMBS.CONFIG.USER_MANAGEMENT'"
+  [pageRootLink]="'/einstellungen/benutzerverwaltung'"
+  [pages]="['BREADCRUMBS.CONFIG.USER_MANAGEMENT_OVERVIEW']"
+></app-hy-breadcrumb>
 
 
 <div class="grid lg:grid-cols-4 gap-5">
@@ -20,10 +20,10 @@
                 <span></span>
               </label>
             </th>
-            <th class="ltr:text-left rtl:text-right uppercase">Benutzer</th>
-            <th class="text-center uppercase">Abk.</th>
-            <th class="text-right uppercase">Email</th>
-            <th class="text-right uppercase">Rolle(n)</th>
+            <th class="ltr:text-left rtl:text-right uppercase">{{'USER.CREATE_USERNAME' | translate}}</th>
+            <th class="text-center uppercase">{{'USER.CREATE_USERCODE' | translate}}</th>
+            <th class="text-right uppercase">{{'USER.CREATE_EMAIL' | translate}}</th>
+            <th class="text-right uppercase">{{'USER.CREATE_ROLES' | translate}}</th>
             <th class="uppercase"></th>
           </tr>
           </thead>
@@ -54,12 +54,14 @@
             </td>
             <td class="ltr:text-right rtl:text-left whitespace-nowrap">
               <div class="inline-flex ltr:ml-auto rtl:mr-auto">
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_secondary">
-                  <span class="la la-pen-fancy"></span>
-                </a>
-                <a href="#no-link" class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2">
+                <button [routerLink]="['/einstellungen/benutzer', user.id]"
+                        class="btn btn-icon btn_outlined btn_secondary">
+                  <span class="la la-edit"></span>
+                </button>
+                <button class="btn btn-icon btn_outlined btn_danger ltr:ml-2 rtl:mr-2"
+                        (click)="triggerDelete(user.id, user.name)">
                   <span class="la la-trash-alt"></span>
-                </a>
+                </button>
               </div>
             </td>
           </tr>
@@ -74,60 +76,39 @@
     <!-- Create User -->
     <form [formGroup]="userCreateForm" (ngSubmit)="submit()">
       <div class="card p-5 flex flex-col sm:gap-y-0 gap-y-5">
-        <h3>Neuen Benutzer erstellen</h3>
+        <h3>{{'USER.CREATE_NEW_HEADER' | translate}}</h3>
         <div class="flex flex-col gap-y-5">
-          <div class="flex items-center">
-            <div class="w-1/4">
-              <label class="label block">Name</label>
-            </div>
-            <div class="w-3/4 ml-2">
-              <div class="custom-select">
-                <input type="text" formControlName="username" class="form-control"/>
-              </div>
-            </div>
+          <div class="relative mt-5">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="username">{{'USER.CREATE_USERNAME' | translate}}</label>
+            <input id="username" class="form-control mt-2 pt-5" formControlName="username">
           </div>
-          <div class="flex items-center">
-            <div class="w-1/4">
-              <label class="label block">Passwort</label>
-            </div>
-            <div class="w-3/4 ml-2">
-              <div class="custom-select">
-                <input type="password" formControlName="password" class="form-control"/>
-              </div>
-            </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="password">{{'USER.CREATE_PASSWORD' | translate}}</label>
+            <input id="password" class="form-control mt-2 pt-5" formControlName="password">
           </div>
-          <div class="flex items-center">
-            <div class="w-1/4">
-              <label class="label block">Kürzel</label>
-            </div>
-            <div class="w-3/4 ml-2">
-              <div class="custom-select">
-                <input type="text" formControlName="userCode" class="form-control"/>
-              </div>
-            </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="userCode">{{'USER.CREATE_USERCODE' | translate}}</label>
+            <input id="userCode" class="form-control mt-2 pt-5" formControlName="userCode">
           </div>
-          <div class="flex items-center">
-            <div class="w-1/4">
-              <label class="label block">E-Mail</label>
-            </div>
-            <div class="w-3/4 ml-2">
-              <div class="custom-select">
-                <input type="text" formControlName="email" class="form-control"/>
-              </div>
-            </div>
+          <div class="relative">
+            <label
+              class="label absolute block bg-input border border-border rounded top-0 ltr:ml-4 rtl:mr-4 px-2 font-heading"
+              for="email">{{'USER.CREATE_EMAIL' | translate}}</label>
+            <input id="email" class="form-control mt-2 pt-5" formControlName="email">
           </div>
-          <div class="flex items-center">
-            <div class="w-1/4">
-              <label class="label block">Rollen</label>
-            </div>
-            <div class="w-3/4 ml-2">
-              <app-hy-multi-select (valuesPublished)="onValuesPublished($event)"
-                                   [values]="roles"></app-hy-multi-select>
-            </div>
+          <div class="relative">
+            <app-hy-multi-select (valuesPublished)="onValuesPublished($event)" [values]="roles"
+                                 [label]="'USER.CREATE_ROLES'"></app-hy-multi-select>
           </div>
         </div>
         <div class="flex flex-wrap gap-2 mt-5 justify-end ">
-          <button class="btn btn_primary uppercase" type="submit">Erstellen</button>
+          <button class="btn btn_primary uppercase" type="submit">{{'GENERIC.CREATE' | translate}}</button>
         </div>
       </div>
     </form>

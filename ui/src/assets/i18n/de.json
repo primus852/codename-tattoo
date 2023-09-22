@@ -1,0 +1,42 @@
+{
+  "ROUTES": {
+    "SETTINGS": "einstellungen"
+  },
+  "BACKEND": {
+    "USER_DELETION_ERROR": "Fehler beim Löschen des Benutzers, bitte versuchen Sie es erneut.",
+    "USER_SELF_DELETION_ERROR": "Der eigene Benutzer kann nicht gelöscht werden"
+  },
+  "USER": {
+    "DELETED": "Benutzer <strong>{{userName}}</strong> gelöscht",
+    "DELETED_GENERIC": "Benutzer wurde gelöscht",
+    "DELETE_QUESTION_TITLE": "Benutzer löschen?",
+    "DELETE_QUESTION_CONTEXT": "Wollen sie den Benutzer <strong>{{userName}}</strong> wirklich löschen?",
+    "CREATED": "Benutzer <strong>{{userName}}</strong> erstellt.",
+    "CREATE_NEW_HEADER": "Neuen Benutzer erstellen",
+    "CREATE_USERNAME": "Name",
+    "CREATE_PASSWORD": "Passwort",
+    "CREATE_USERCODE": "Kürzel",
+    "CREATE_EMAIL": "E-Mail",
+    "CREATE_ROLES": "Rolle(n)"
+  },
+  "BREADCRUMBS": {
+    "CONFIG": {
+      "USER_MANAGEMENT": "Benutzerverwaltung",
+      "USER_MANAGEMENT_OVERVIEW": "Übersicht",
+      "USER_MANAGEMENT_USER_DETAILS": "Benutzerdetails",
+      "PRICES": "Preise"
+    }
+  },
+  "GENERIC": {
+    "ADMINISTRATION": "Verwaltung",
+    "SETTINGS": "Einstellungen",
+    "USER": "Name",
+    "CREATE": "Erstellen",
+    "SAVE": "Speichern",
+    "DELETE": "Löschen",
+    "SUCCESS": "Erfolg",
+    "ERROR": "Fehler",
+    "CONFIRM_DELETE": "Ja, löschen",
+    "ABORT": "Abbrechen"
+  }
+}
